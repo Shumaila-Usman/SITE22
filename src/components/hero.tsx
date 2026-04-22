@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 import {
   motion,
   AnimatePresence,
@@ -22,6 +23,59 @@ import Link from "next/link";
 
 const E: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const E_IN: [number, number, number, number] = [0.4, 0, 1, 1];
+
+// ─── Clothing images background ──────────────────────────────────────────────
+
+const BG_CLOTHES = [
+  { src: "/images/clothes/cloth-1.png",  left: "4%",  top: "8%",  size: 130, rot: -15, opacity: 0.18, floatY: 18, floatDur: 8,  delay: 0    },
+  { src: "/images/clothes/cloth-2.png",  left: "80%", top: "4%",  size: 150, rot:  20, opacity: 0.15, floatY: 22, floatDur: 10, delay: 1.5  },
+  { src: "/images/clothes/cloth-3.png",  left: "14%", top: "58%", size: 115, rot:  10, opacity: 0.16, floatY: 14, floatDur: 7,  delay: 0.8  },
+  { src: "/images/clothes/cloth-4.png",  left: "68%", top: "52%", size: 125, rot: -25, opacity: 0.14, floatY: 20, floatDur: 9,  delay: 2    },
+  { src: "/images/clothes/cloth-5.png",  left: "43%", top: "1%",  size: 140, rot:   8, opacity: 0.13, floatY: 16, floatDur: 11, delay: 0.4  },
+  { src: "/images/clothes/cloth-6.png",  left: "88%", top: "33%", size: 110, rot: -30, opacity: 0.15, floatY: 24, floatDur: 8,  delay: 3    },
+  { src: "/images/clothes/cloth-7.png",  left: "1%",  top: "36%", size: 120, rot:  18, opacity: 0.13, floatY: 12, floatDur: 12, delay: 1    },
+  { src: "/images/clothes/cloth-8.png",  left: "56%", top: "70%", size: 105, rot: -12, opacity: 0.14, floatY: 18, floatDur: 9,  delay: 2.5  },
+  { src: "/images/clothes/cloth-9.png",  left: "30%", top: "65%", size: 118, rot:  22, opacity: 0.12, floatY: 15, floatDur: 10, delay: 1.2  },
+  { src: "/images/clothes/cloth-10.png", left: "72%", top: "18%", size: 108, rot: -18, opacity: 0.13, floatY: 20, floatDur: 8,  delay: 0.6  },
+  { src: "/images/clothes/cloth-11.png", left: "22%", top: "20%", size: 122, rot:  12, opacity: 0.12, floatY: 16, floatDur: 11, delay: 1.8  },
+];
+
+function HeroClothingBg({ slideId }: { slideId: number }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {BG_CLOTHES.map((item, i) => (
+        <motion.div
+          key={`${slideId}-${i}`}
+          className="absolute"
+          style={{ left: item.left, top: item.top, opacity: item.opacity }}
+          initial={{ y: 40, opacity: 0, rotate: item.rot - 10, scale: 0.8 }}
+          animate={{
+            y: [0, -item.floatY, 0],
+            opacity: [0, item.opacity, item.opacity, item.opacity * 0.7],
+            rotate: [item.rot, item.rot + 5, item.rot - 3, item.rot],
+            scale: 1,
+          }}
+          transition={{
+            y:       { duration: item.floatDur, repeat: Infinity, ease: "easeInOut", delay: item.delay },
+            opacity: { duration: 1.2, ease: "easeOut", delay: item.delay * 0.3 },
+            rotate:  { duration: item.floatDur * 1.3, repeat: Infinity, ease: "easeInOut", delay: item.delay },
+            scale:   { duration: 0.8, ease: [0.22, 1.15, 0.36, 1], delay: item.delay * 0.3 },
+          }}
+        >
+          <div style={{ width: item.size, height: item.size, position: "relative" }}>
+            <Image
+              src={item.src}
+              alt=""
+              fill
+              className="object-contain"
+              aria-hidden
+            />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
 
 const SLIDES = [
   {
@@ -292,6 +346,19 @@ export function Hero() {
 
             {/* Slide content — auto height on mobile, fixed aspect on desktop */}
             <div className="relative min-h-[420px] w-full sm:aspect-[16/8] sm:min-h-0 lg:aspect-[16/6]">
+              {/* ── Clothing background layer ── */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`clothes-${slide.id}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute inset-0"
+                >
+                  <HeroClothingBg slideId={slide.id} />
+                </motion.div>
+              </AnimatePresence>
               <AnimatePresence mode="wait" custom={direction}>
                 <SlideContent key={slide.id} slide={slide} direction={direction} />
               </AnimatePresence>

@@ -18,8 +18,13 @@
   @apply border-border;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   @apply bg-black text-foreground antialiased;
+  overflow-x: hidden;
   background-image: radial-gradient(
       circle at 20% 0%,
       rgba(239, 68, 68, 0.08),
@@ -49,3 +54,10 @@ body {
   filter: blur(90px);
   background: radial-gradient(circle, rgba(239, 68, 68, 0.28), rgba(239, 68, 68, 0));
 }
+
+/* Arbitrary low-opacity fills used in hero */
+.bg-white\/3  { background-color: rgba(255, 255, 255, 0.03); }
+.bg-white\/4  { background-color: rgba(255, 255, 255, 0.04); }
+.bg-white\/8  { background-color: rgba(255, 255, 255, 0.08); }
+.border-white\/8 { border-color: rgba(255, 255, 255, 0.08); }
+.bg-red-500\/8  { background-color: rgba(239, 68, 68, 0.08); }

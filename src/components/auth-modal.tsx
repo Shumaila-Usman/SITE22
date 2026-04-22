@@ -1,0 +1,230 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { useAuthStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+
+interface AuthModalProps {
+  open: boolean;
+  onClose: () => void;
+  defaultTab?: "login" | "register";
+}
+
+export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProps) {
+  const [tab, setTab] = useState<"login" | "register">(defaultTab);
+  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const login = useAuthStore((s) => s.login);
+
+  const [form, setForm] = useState({
+    name: "", email: "", company: "", country: "", password: "",
+  });
+
+  // Sync tab when defaultTab prop changes
+  useEffect(() => { setTab(defaultTab); }, [defaultTab]);
+
+  // Lock body scroll while open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  function update(field: string, value: string) {
+    setForm((f) => ({ ...f, [field]: value }));
+    setError("");
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    if (!form.email || !form.password) {
+      setError("Email and password are required.");
+      return;
+    }
+    if (tab === "register" && !form.name) {
+      setError("Full name is required.");
+      return;
+    }
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 600));
+    login({
+      id: crypto.randomUUID(),
+      name: form.name || form.email.split("@")[0],
+      email: form.email,
+      company: form.company || undefined,
+      country: form.country || undefined,
+    });
+    setLoading(false);
+    onClose();
+  }
+
+  const inputCls =
+    "w-full rounded-lg border border-white/[0.1] bg-zinc-900 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition-colors focus:border-red-500/60 focus:bg-zinc-800";
+
+  return (
+    <AnimatePresence>
+      {open && (
+        // Full-screen overlay — flex centers the card
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(0,0,0,0.75)" }}
+          onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-md overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#120303] shadow-2xl"
+            style={{ maxHeight: "calc(100svh - 2rem)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top red accent line */}
+            <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-red-500 to-transparent" />
+
+            <div className="p-5 sm:p-8">
+              {/* Header row */}
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-black uppercase tracking-wide text-white">
+                    {tab === "login" ? "Sign In" : "Create Account"}
+                  </h2>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {tab === "login"
+                      ? "Access prices and your wishlist"
+                      : "Register to view prices and save products"}
+                  </p>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.1] text-zinc-400 transition-colors hover:border-white/20 hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Tab switcher */}
+              <div className="mb-6 flex rounded-xl border border-white/[0.08] bg-zinc-900/80 p-1">
+                {(["login", "register"] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => { setTab(t); setError(""); }}
+                    className={`flex-1 rounded-lg py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
+                      tab === t
+                        ? "bg-red-600 text-white shadow-sm"
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    {t === "login" ? "Sign In" : "Register"}
+                  </button>
+                ))}
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                {tab === "register" && (
+                  <>
+                    <input
+                      suppressHydrationWarning
+                      placeholder="Full Name *"
+                      value={form.name}
+                      onChange={(e) => update("name", e.target.value)}
+                      className={inputCls}
+                    />
+                    <input
+                      suppressHydrationWarning
+                      placeholder="Company / Brand"
+                      value={form.company}
+                      onChange={(e) => update("company", e.target.value)}
+                      className={inputCls}
+                    />
+                    <input
+                      suppressHydrationWarning
+                      placeholder="Country"
+                      value={form.country}
+                      onChange={(e) => update("country", e.target.value)}
+                      className={inputCls}
+                    />
+                  </>
+                )}
+
+                <input
+                  suppressHydrationWarning
+                  type="email"
+                  placeholder="Email Address *"
+                  value={form.email}
+                  onChange={(e) => update("email", e.target.value)}
+                  className={inputCls}
+                />
+
+                <div className="relative">
+                  <input
+                    suppressHydrationWarning
+                    type={showPass ? "text" : "password"}
+                    placeholder="Password *"
+                    value={form.password}
+                    onChange={(e) => update("password", e.target.value)}
+                    className={`${inputCls} pr-11`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass((v) => !v)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+                  >
+                    {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+
+                {error && (
+                  <p className="rounded-lg bg-red-500/10 px-3 py-2 text-xs text-red-400">
+                    {error}
+                  </p>
+                )}
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="group relative mt-1 w-full overflow-hidden"
+                  disabled={loading}
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {loading
+                      ? "Please wait..."
+                      : tab === "login"
+                      ? "Sign In"
+                      : "Create Account"}
+                    {!loading && (
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    )}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/[0.1] to-transparent transition-transform duration-500 group-hover:translate-x-full"
+                  />
+                </Button>
+              </form>
+
+              <p className="mt-5 text-center text-[11px] text-zinc-600">
+                By continuing you agree to our{" "}
+                <a href="/terms" className="text-zinc-400 underline hover:text-white">
+                  Terms &amp; Policy
+                </a>
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}

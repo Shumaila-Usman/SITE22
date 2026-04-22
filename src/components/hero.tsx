@@ -1,104 +1,386 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight, PlayCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useSpring,
+} from "framer-motion";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Globe2,
+  Package,
+  ShieldCheck,
+  Zap,
+  Factory,
+} from "lucide-react";
+import Link from "next/link";
 
-const title = ["Built", "For", "Performance", "At", "Global", "Scale"];
+const E: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const E_IN: [number, number, number, number] = [0.4, 0, 1, 1];
 
-export function Hero() {
+const SLIDES = [
+  {
+    id: 0,
+    eyebrow: "Sportswear Manufacturer & Exporter",
+    headline: ["Built For", "Performance"],
+    accent: "Performance",
+    sub: "Megacore International engineers high-performance apparel through vertically integrated manufacturing and logistics-ready export delivery across global markets.",
+    cta: { label: "Start Production", href: "/contact" },
+    ctaSecondary: { label: "View Products", href: "/products" },
+    tag: "Est. Pakistan",
+    stats: [{ v: "180+", l: "Markets" }, { v: "12M+", l: "Units / Year" }, { v: "50 pcs", l: "Min. Order" }],
+    accentColor: "from-red-500 to-red-300",
+    panelGradient: "from-red-950/40 via-zinc-950 to-black",
+    icon: Globe2,
+  },
+  {
+    id: 1,
+    eyebrow: "Product Catalog",
+    headline: ["Premium", "Sportswear"],
+    accent: "Sportswear",
+    sub: "Jerseys, tracksuits, gym wear, hoodies, compression sets, and accessories — manufactured to international export standards with full customization.",
+    cta: { label: "Explore Products", href: "/products" },
+    ctaSecondary: { label: "View Catalog", href: "/products" },
+    tag: "150+ SKUs",
+    stats: [{ v: "25+", l: "Categories" }, { v: "150+", l: "Products" }, { v: "Custom", l: "Sizing" }],
+    accentColor: "from-orange-400 to-red-400",
+    panelGradient: "from-orange-950/30 via-zinc-950 to-black",
+    icon: Package,
+  },
+  {
+    id: 2,
+    eyebrow: "OEM & Private Label",
+    headline: ["Custom", "Manufacturing"],
+    accent: "Manufacturing",
+    sub: "Your brand, our production. Custom logos, private labels, unique fabrics, colorways, and packaging — built to your exact specification.",
+    cta: { label: "Explore OEM", href: "/capabilities" },
+    ctaSecondary: { label: "Request Quote", href: "/contact" },
+    tag: "Full OEM",
+    stats: [{ v: "100%", l: "Custom" }, { v: "OEM", l: "Available" }, { v: "Private", l: "Label" }],
+    accentColor: "from-red-400 to-rose-300",
+    panelGradient: "from-rose-950/30 via-zinc-950 to-black",
+    icon: Factory,
+  },
+  {
+    id: 3,
+    eyebrow: "MOQ & Order Process",
+    headline: ["Simple", "Bulk Orders"],
+    accent: "Bulk Orders",
+    sub: "Start with just 50 pieces. Send inquiry → confirm specs → advance payment → sampling → production → shipment.",
+    cta: { label: "View Process", href: "/process" },
+    ctaSecondary: { label: "Start Order", href: "/contact" },
+    tag: "MOQ 50 pcs",
+    stats: [{ v: "50 pcs", l: "Min. Order" }, { v: "5–7d", l: "Sampling" }, { v: "15–25d", l: "Production" }],
+    accentColor: "from-red-500 to-red-400",
+    panelGradient: "from-red-950/35 via-zinc-950 to-black",
+    icon: Zap,
+  },
+  {
+    id: 4,
+    eyebrow: "Global Export",
+    headline: ["Export Ready", "Worldwide"],
+    accent: "Worldwide",
+    sub: "Serving buyers across Europe, North America, the Middle East, Africa, and Asia. ISO 9001 certified. Export documentation and professional handling.",
+    cta: { label: "Contact Us", href: "/contact" },
+    ctaSecondary: { label: "Our Process", href: "/process" },
+    tag: "ISO 9001",
+    stats: [{ v: "42+", l: "Countries" }, { v: "ISO", l: "9001 Cert." }, { v: "98.4%", l: "On-Time" }],
+    accentColor: "from-red-300 to-white",
+    panelGradient: "from-zinc-900/60 via-zinc-950 to-black",
+    icon: ShieldCheck,
+  },
+];
+
+function Orb({ className, dur, delay }: { className: string; dur: number; delay: number }) {
   return (
-    <section className="relative isolate overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(239,68,68,0.24),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.08),transparent_25%)]" />
-      <div className="absolute inset-0 bg-grid bg-[size:44px_44px] opacity-30" />
-      <div className="noise-overlay" />
-      <div className="absolute -left-20 top-16 h-56 w-56 rotate-12 rounded-3xl border border-red-500/30 bg-red-500/10 blur-3xl" />
-      <div className="absolute -right-20 bottom-20 h-64 w-64 rounded-full border border-white/20 bg-white/5 blur-3xl" />
-      <div className="section-glow -bottom-24 left-10" />
+    <motion.div className={className}
+      animate={{ y: [0, -22, 0], x: [0, 12, 0] }}
+      transition={{ duration: dur, delay, repeat: Infinity, ease: "easeInOut" }}
+    />
+  );
+}
 
-      <div className="relative mx-auto grid min-h-[88vh] max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 w-fit border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs uppercase tracking-[0.25em] text-red-300"
-          >
-            Sportswear Manufacturer & Exporter
-          </motion.p>
+function ScrollCue() {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+      transition={{ delay: 3.2, duration: 1 }}
+      className="pointer-events-none absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
+    >
+      <div className="flex h-9 w-5 items-start justify-center rounded-full border border-white/20 pt-1.5">
+        <motion.div className="h-1.5 w-0.5 rounded-full bg-red-400"
+          animate={{ y: [0, 10, 0], opacity: [1, 0.3, 1] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+      <span className="text-[8px] uppercase tracking-[0.35em] text-zinc-600">Scroll</span>
+    </motion.div>
+  );
+}
 
-          <h1 className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-5xl font-black uppercase leading-[0.88] tracking-tight text-transparent md:text-7xl">
-            {title.map((word, index) => (
-              <motion.span
-                key={word + index}
-                initial={{ opacity: 0, y: 36 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="mr-4 inline-block"
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h1>
+function SlideContent({ slide, direction }: { slide: typeof SLIDES[0]; direction: number }) {
+  const Icon = slide.icon;
+  const variants = {
+    enter: { opacity: 0, x: direction > 0 ? 60 : -60, filter: "blur(12px)" },
+    center: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.75, ease: E } },
+    exit: { opacity: 0, x: direction > 0 ? -60 : 60, filter: "blur(8px)", transition: { duration: 0.45, ease: E_IN } },
+  };
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 max-w-2xl text-lg text-zinc-300"
-          >
-            Megacore International engineers high-performance apparel through
-            vertically integrated manufacturing, rapid development pipelines, and
-            logistics-ready export delivery across global markets.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.52 }}
-            className="mt-10 flex flex-wrap gap-4"
-          >
-            <Button size="lg">
-              Start Production
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="lg">
-              <PlayCircle className="h-4 w-4" />
-              Watch Facility Reel
-            </Button>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.75, delay: 0.3 }}
-          whileHover={{ y: -8 }}
-          className="relative"
-        >
-          <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br from-zinc-800 via-zinc-950 to-black p-6 shadow-glow">
-            <div className="h-full rounded-xl border border-white/15 bg-[linear-gradient(130deg,rgba(239,68,68,0.18),rgba(0,0,0,0.82)_38%,rgba(255,255,255,0.08))] p-6">
-              <div className="grid h-full grid-cols-6 gap-3">
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0.3 }}
-                    animate={{ opacity: [0.3, 0.9, 0.3] }}
-                    transition={{
-                      duration: 2.6,
-                      repeat: Number.POSITIVE_INFINITY,
-                      delay: i * 0.05,
-                    }}
-                    className="rounded-sm bg-red-400/40"
-                  />
-                ))}
-              </div>
-            </div>
+  return (
+    <motion.div key={slide.id} variants={variants} initial="enter" animate="center" exit="exit"
+      className="absolute inset-0 flex flex-col justify-between p-4 sm:p-8 lg:p-12"
+    >
+      {/* Top row */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-red-500/30 bg-red-500/10">
+            <Icon className="h-3 w-3 text-red-400" />
           </div>
-        </motion.div>
+          <span className="truncate text-[9px] uppercase tracking-[0.2em] text-zinc-400 sm:text-[10px] sm:tracking-[0.25em]">
+            {slide.eyebrow}
+          </span>
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+          <span className="text-[9px] uppercase tracking-widest text-zinc-400">{slide.tag}</span>
+        </div>
       </div>
 
-      <div className="h-20 w-full -skew-y-2 bg-gradient-to-r from-red-900/20 via-red-500/10 to-zinc-950" />
+      {/* Headline */}
+      <div className="flex flex-1 flex-col justify-center py-4 sm:py-8">
+        <h2 className="text-[clamp(1.75rem,6vw,5rem)] font-black uppercase leading-[0.9] tracking-tight">
+          {slide.headline.map((line, li) => (
+            <span key={li} className="block overflow-hidden">
+              <motion.span
+                initial={{ x: "-110%", opacity: 0 }}
+                animate={{ x: "0%", opacity: 1 }}
+                transition={{ duration: 0.75, ease: [0.22, 1.15, 0.36, 1], delay: 0.3 + li * 0.12 }}
+                className={`inline-block ${line === slide.accent ? `bg-gradient-to-r ${slide.accentColor} bg-clip-text text-transparent` : "text-white"}`}
+              >
+                {line}
+              </motion.span>
+            </span>
+          ))}
+        </h2>
+        <motion.p
+          initial={{ opacity: 0, x: -50, filter: "blur(4px)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+          transition={{ delay: 0.55, duration: 0.75, ease: [0.22, 1.15, 0.36, 1] }}
+          className="mt-3 text-[0.8rem] leading-relaxed text-zinc-400 sm:text-[0.9375rem]"
+        >
+          {slide.sub}
+        </motion.p>
+      </div>
+
+      {/* Bottom — stats + CTAs */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <motion.div
+          initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.65, duration: 0.7, ease: [0.22, 1.15, 0.36, 1] }}
+          className="flex gap-4"
+        >
+          {slide.stats.map((s, i) => (
+            <div key={i} className="flex flex-col gap-0.5">
+              <span className="text-sm font-black leading-none text-white sm:text-base">{s.v}</span>
+              <span className="text-[8px] uppercase tracking-[0.15em] text-zinc-500">{s.l}</span>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 50, y: 20 }} animate={{ opacity: 1, x: 0, y: 0 }}
+          transition={{ delay: 0.72, duration: 0.8, ease: [0.22, 1.15, 0.36, 1] }}
+          className="flex flex-wrap gap-2"
+        >
+          <Link href={slide.cta.href}
+            className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full bg-red-600 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-all hover:bg-red-500 sm:px-5 sm:py-2.5 sm:text-[11px]"
+          >
+            {slide.cta.label}
+            <ArrowRight className="h-3 w-3" />
+            <span aria-hidden className="absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+          </Link>
+          <Link href={slide.ctaSecondary.href}
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/20 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-300 transition-all hover:border-white/40 hover:text-white sm:px-5 sm:py-2.5 sm:text-[11px]"
+          >
+            {slide.ctaSecondary.label}
+          </Link>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function Hero() {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const panelY = useSpring(useTransform(scrollYProgress, [0, 1], ["0%", "6%"]), { stiffness: 50, damping: 18 });
+  const panelOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  const go = useCallback((idx: number, dir: number) => { setDirection(dir); setCurrent(idx); }, []);
+  const next = useCallback(() => go((current + 1) % SLIDES.length, 1), [current, go]);
+  const prev = useCallback(() => go((current - 1 + SLIDES.length) % SLIDES.length, -1), [current, go]);
+
+  useEffect(() => {
+    if (paused) return;
+    intervalRef.current = setInterval(next, 5500);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [next, paused]);
+
+  const slide = SLIDES[current];
+
+  return (
+    <section ref={sectionRef}
+      className="relative isolate w-full max-w-[100vw] overflow-hidden bg-black"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Background */}
+      <motion.div style={{ y: bgY }} className="absolute inset-0 will-change-transform">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_50%_-5%,rgba(239,68,68,0.2),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_65%_at_-5%_45%,rgba(185,28,28,0.15),transparent_55%)]" />
+        <div className="absolute inset-0 bg-grid bg-[size:42px_42px] opacity-[0.1]" />
+        <div className="noise-overlay opacity-[0.03]" />
+        <Orb className="absolute -left-40 -top-10 h-[38rem] w-[38rem] rounded-full bg-red-700/[0.09] blur-[110px]" dur={13} delay={0} />
+        <Orb className="absolute -right-20 top-1/4 h-[42rem] w-[42rem] rounded-full bg-red-500/[0.055] blur-[130px]" dur={16} delay={5} />
+      </motion.div>
+
+      {/* Content */}
+      <motion.div style={{ y: panelY, opacity: panelOpacity }}
+        className="relative w-full will-change-transform"
+      >
+        {/* Top label */}
+        <motion.div
+          initial={{ opacity: 0, x: -80, filter: "blur(8px)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.8, ease: [0.22, 1.15, 0.36, 1], delay: 0.1 }}
+          className="flex items-center justify-center gap-3 px-4 pb-4 pt-20 sm:pt-24 lg:pt-32"
+        >
+          <span className="h-px w-8 bg-red-500/60" />
+          <span className="text-[10px] uppercase tracking-[0.32em] text-red-300/70">Megacore International</span>
+          <span className="h-px w-8 bg-red-500/60" />
+        </motion.div>
+
+        {/* Showcase panel — full width on mobile, max-w on desktop */}
+        <motion.div
+          initial={{ opacity: 0, x: 100, y: -60, scale: 0.94, filter: "blur(12px)" }}
+          animate={{ opacity: 1, x: 0, y: 0, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 1.1, ease: [0.22, 1.15, 0.36, 1], delay: 0.25 }}
+          className="mx-auto w-full px-0 sm:max-w-6xl sm:px-4 lg:px-6"
+        >
+          <div className="relative overflow-hidden border-y border-white/[0.08] bg-zinc-950 sm:rounded-[24px] sm:border">
+            {/* Slide bg */}
+            <AnimatePresence mode="wait">
+              <motion.div key={`bg-${slide.id}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }} className={`absolute inset-0 bg-gradient-to-br ${slide.panelGradient}`}
+              />
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-grid bg-[size:32px_32px] opacity-[0.07]" />
+            <motion.div key={`accent-${slide.id}`} initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 0.9, ease: E }}
+              className={`absolute inset-x-0 top-0 h-[2px] origin-left bg-gradient-to-r ${slide.accentColor} opacity-70`}
+            />
+
+            {/* Slide content — auto height on mobile, fixed aspect on desktop */}
+            <div className="relative min-h-[420px] w-full sm:aspect-[16/8] sm:min-h-0 lg:aspect-[16/6]">
+              <AnimatePresence mode="wait" custom={direction}>
+                <SlideContent key={slide.id} slide={slide} direction={direction} />
+              </AnimatePresence>
+            </div>
+
+            {/* Bottom bar */}
+            <div className="relative flex items-center justify-between border-t border-white/[0.06] px-4 py-3 sm:px-8 sm:py-4">
+              <div className="flex items-center gap-2">
+                {SLIDES.map((s, i) => (
+                  <button key={s.id} onClick={() => go(i, i > current ? 1 : -1)}
+                    suppressHydrationWarning className="group relative flex items-center" aria-label={`Slide ${i + 1}`}
+                  >
+                    <motion.div
+                      animate={{ width: i === current ? 24 : 6, backgroundColor: i === current ? "rgb(239,68,68)" : "rgba(255,255,255,0.2)" }}
+                      transition={{ duration: 0.4, ease: E }} className="h-1.5 rounded-full"
+                    />
+                  </button>
+                ))}
+              </div>
+              <span className="text-[10px] uppercase tracking-[0.25em] text-zinc-600">
+                {String(current + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
+              </span>
+              <div className="flex items-center gap-2">
+                <button onClick={prev} suppressHydrationWarning aria-label="Previous"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.1] text-zinc-400 hover:border-white/25 hover:text-white"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button onClick={next} suppressHydrationWarning aria-label="Next"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.1] text-zinc-400 hover:border-white/25 hover:text-white"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {!paused && (
+              <motion.div key={`progress-${current}`} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+                transition={{ duration: 5.5, ease: "linear" }}
+                className="absolute bottom-0 left-0 h-[2px] w-full origin-left bg-red-500/40"
+              />
+            )}
+          </div>
+
+          {/* Floating stat cards — desktop only */}
+          <AnimatePresence mode="wait">
+            <motion.div key={`stat-left-${slide.id}`}
+              initial={{ opacity: 0, x: -24, y: 8 }} animate={{ opacity: 1, x: 0, y: 0 }} exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.6, ease: E, delay: 0.4 }}
+              className="absolute -bottom-5 -left-4 hidden rounded-2xl border border-white/[0.09] bg-zinc-900/95 px-5 py-3.5 shadow-2xl backdrop-blur-xl md:block"
+            >
+              <p className="text-[9px] uppercase tracking-[0.22em] text-zinc-500">{slide.stats[0].l}</p>
+              <p className="mt-0.5 text-xl font-black text-white">{slide.stats[0].v}</p>
+            </motion.div>
+          </AnimatePresence>
+          <AnimatePresence mode="wait">
+            <motion.div key={`stat-right-${slide.id}`}
+              initial={{ opacity: 0, x: 24, y: -8 }} animate={{ opacity: 1, x: 0, y: 0 }} exit={{ opacity: 0, x: 16 }}
+              transition={{ duration: 0.6, ease: E, delay: 0.5 }}
+              className="absolute -right-4 -top-5 hidden rounded-2xl border border-red-500/20 bg-zinc-900/95 px-5 py-3.5 shadow-2xl backdrop-blur-xl md:block"
+            >
+              <p className="text-[9px] uppercase tracking-[0.22em] text-zinc-500">{slide.stats[2].l}</p>
+              <p className="mt-0.5 text-xl font-black text-white">{slide.stats[2].v}</p>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Trust strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: E, delay: 0.9 }}
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 pb-10 pt-6 sm:gap-x-8 sm:pb-16"
+        >
+          {[
+            { icon: ShieldCheck, label: "ISO 9001 Certified" },
+            { icon: Globe2, label: "180+ Global Markets" },
+            { icon: Package, label: "MOQ from 50 pcs" },
+            { icon: Factory, label: "Vertically Integrated" },
+          ].map(({ icon: Icon, label }) => (
+            <div key={label} className="flex items-center gap-2 text-zinc-500">
+              <Icon className="h-3.5 w-3.5 text-red-500/60" />
+              <span className="text-[10px] uppercase tracking-[0.15em] sm:text-[11px] sm:tracking-[0.18em]">{label}</span>
+            </div>
+          ))}
+        </motion.div>
+      </motion.div>
+
+      <ScrollCue />
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black via-black/50 to-transparent" />
     </section>
   );
 }

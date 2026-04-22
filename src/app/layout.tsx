@@ -4,9 +4,12 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
-  title: "Megacore International | Sportswear Manufacturer & Exporter",
+  title: {
+    default: "Megacore International | Sportswear Manufacturer & Exporter",
+    template: "%s | Megacore International",
+  },
   description:
-    "Futuristic high-performance sportswear manufacturing and export solutions for global brands.",
+    "Premium sportswear manufacturer and exporter based in Pakistan. Custom manufacturing, OEM, private label. MOQ 50 pieces.",
 };
 
 export default function RootLayout({

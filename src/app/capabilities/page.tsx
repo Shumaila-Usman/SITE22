@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  ArrowRight, CheckCircle2, Factory, Globe2, Package,
+import { ArrowRight, CheckCircle2, Factory, Globe2,
   Printer, Ruler, ShieldCheck, Shirt, Truck, Zap,
 } from "lucide-react";
 

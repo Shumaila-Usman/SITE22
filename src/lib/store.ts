@@ -27,7 +27,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       login: (user) => set({ user, isAuthenticated: true }),
-      logout: () => set({ user: null, isAuthenticated: false }),
+      logout: () => {
+        // Clear server-side cookie
+        fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+        set({ user: null, isAuthenticated: false });
+      },
       updateProfile: (data) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...data } : null,

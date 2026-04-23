@@ -53,14 +53,55 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    login({
-      id: crypto.randomUUID(),
-      name: form.name || form.email.split("@")[0],
-      email: form.email,
-      company: form.company || undefined,
-      country: form.country || undefined,
-    });
+
+    if (tab === "register") {
+      // Save user to MongoDB
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          company: form.company || undefined,
+          country: form.country || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Registration failed.");
+        setLoading(false);
+        return;
+      }
+      login({
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        company: data.user.company,
+        country: data.user.country,
+      });
+    } else {
+      // Login — verify credentials against MongoDB
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+      login({
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        company: data.user.company,
+        country: data.user.country,
+      });
+    }
+
     setLoading(false);
     onClose();
   }

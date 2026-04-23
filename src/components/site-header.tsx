@@ -11,12 +11,13 @@ import { useAuthStore, useWishlistStore } from "@/lib/store";
 import { AuthModal } from "@/components/auth-modal";
 
 const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/products", label: "Products" },
+  { href: "/",           label: "Home" },
+  { href: "/about",      label: "About" },
+  { href: "/products",   label: "Products" },
+  { href: "/customize",  label: "Customize" },
   { href: "/capabilities", label: "Custom Mfg" },
-  { href: "/process", label: "MOQ & Process" },
-  { href: "/contact", label: "Contact" },
+  { href: "/process",    label: "MOQ & Process" },
+  { href: "/contact",    label: "Contact" },
 ];
 
 // Animated gradient — slow horizontal drift, premium feel
@@ -80,10 +81,31 @@ export function SiteHeader() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "register">("login");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [introVisible, setIntroVisible] = useState(true);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const { user, isAuthenticated, logout } = useAuthStore();
   const wishlistCount = useWishlistStore((s) => s.items.length);
+
+  // Hide header while intro is playing (only on first visit)
+  useEffect(() => {
+    const KEY = "mci_intro_done";
+    if (sessionStorage.getItem(KEY)) {
+      setIntroVisible(false);
+    } else {
+      setIntroVisible(true);
+      // Listen for intro completion — page.tsx sets this key then dispatches storage event
+      function onStorage() {
+        if (sessionStorage.getItem(KEY)) setIntroVisible(false);
+      }
+      window.addEventListener("storage", onStorage);
+      // Also poll — storage event doesn't fire in same tab
+      const poll = setInterval(() => {
+        if (sessionStorage.getItem(KEY)) { setIntroVisible(false); clearInterval(poll); }
+      }, 200);
+      return () => { window.removeEventListener("storage", onStorage); clearInterval(poll); };
+    }
+  }, []);
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 40); }
@@ -107,7 +129,14 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50">
+      <header
+        className="fixed inset-x-0 top-0 z-50"
+        style={{
+          opacity: introVisible ? 0 : 1,
+          pointerEvents: introVisible ? "none" : "auto",
+          transition: "opacity 0.5s ease",
+        }}
+      >
         {/* ── Background layers ── */}
         {/* Hero-integrated state: fully transparent */}
         <motion.div

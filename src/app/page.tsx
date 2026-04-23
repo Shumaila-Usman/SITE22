@@ -42,6 +42,7 @@ export default function HomePage() {
   }, []);
 
   function handleIntroComplete() {
+    sessionStorage.setItem("mci_intro_done", "1");
     setShowIntro(false);
     setReady(true);
   }

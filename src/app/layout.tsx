@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { ConditionalShell } from "@/components/conditional-shell";
 
 export const metadata: Metadata = {
   title: {
@@ -20,9 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body>
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        <ConditionalShell>{children}</ConditionalShell>
       </body>
     </html>
   );

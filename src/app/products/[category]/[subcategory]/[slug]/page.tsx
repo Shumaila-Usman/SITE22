@@ -1,22 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, MessageCircle } from "lucide-react";
-import {
-  ALL_PRODUCTS,
-  SLUG_TO_CATEGORY,
-  subCategoryFromSlug,
-  getProductsBySubCategory,
-  productUrl,
-} from "@/lib/products";
+import Image from "next/image";
+import { CheckCircle2, MessageCircle } from "lucide-react";
+import { connectDB } from "@/lib/mongodb";
+import Category from "@/models/Category";
+import Subcategory from "@/models/Subcategory";
+import ProductModel from "@/models/Product";
+import { dbProductToProduct } from "@/lib/products";
 import { ProductDetailClient } from "./product-detail-client";
 
-export async function generateStaticParams() {
-  return ALL_PRODUCTS.map((p) => ({
-    category: p.mainCategory.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    subcategory: p.subCategory.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    slug: p.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -24,11 +17,12 @@ export async function generateMetadata({
   params: Promise<{ category: string; subcategory: string; slug: string }>;
 }) {
   const { slug } = await params;
-  const product = ALL_PRODUCTS.find((p) => p.slug === slug);
+  await connectDB();
+  const product = await ProductModel.findOne({ slug, isActive: true }).lean();
   if (!product) return { title: "Product Not Found" };
   return {
-    title: `${product.code} — ${product.subCategory} | Megacore International`,
-    description: product.description,
+    title: `${product.code} | Megacore International`,
+    description: product.shortDescription ?? "",
   };
 }
 
@@ -38,15 +32,34 @@ export default async function ProductDetailPage({
   params: Promise<{ category: string; subcategory: string; slug: string }>;
 }) {
   const { category, subcategory, slug } = await params;
-  const product = ALL_PRODUCTS.find((p) => p.slug === slug);
-  if (!product) notFound();
+  await connectDB();
 
-  const main = SLUG_TO_CATEGORY[category];
-  const sub = main ? subCategoryFromSlug(subcategory, main) : undefined;
+  const cat = await Category.findOne({ slug: category }).lean();
+  const sub = cat
+    ? await Subcategory.findOne({ slug: subcategory, categoryId: cat._id }).lean()
+    : null;
 
-  const related = getProductsBySubCategory(product.subCategory)
-    .filter((p) => p.id !== product.id)
-    .slice(0, 4);
+  const dbProduct = await ProductModel.findOne({ slug, isActive: true })
+    .populate("categoryId", "name slug")
+    .populate("subcategoryId", "name slug")
+    .lean();
+
+  if (!dbProduct) notFound();
+
+  const product = dbProductToProduct(dbProduct);
+
+  // Related products in the same subcategory
+  const dbRelated = await ProductModel.find({
+    subcategoryId: dbProduct.subcategoryId,
+    isActive: true,
+    _id: { $ne: dbProduct._id },
+  })
+    .populate("categoryId", "name slug")
+    .populate("subcategoryId", "name slug")
+    .limit(4)
+    .lean();
+
+  const related = dbRelated.map(dbProductToProduct);
 
   return (
     <main className="min-h-screen bg-black pt-28 pb-24">
@@ -57,24 +70,39 @@ export default async function ProductDetailPage({
         <div className="mb-10 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500">
           <Link href="/products" className="transition-colors hover:text-white">Products</Link>
           <span>/</span>
-          <Link href={`/products/${category}`} className="transition-colors hover:text-white">{main}</Link>
+          <Link href={`/products/${category}`} className="transition-colors hover:text-white">
+            {cat?.name ?? category}
+          </Link>
           <span>/</span>
-          <Link href={`/products/${category}/${subcategory}`} className="transition-colors hover:text-white">{sub}</Link>
+          <Link href={`/products/${category}/${subcategory}`} className="transition-colors hover:text-white">
+            {sub?.name ?? subcategory}
+          </Link>
           <span>/</span>
           <span className="text-zinc-300">{product.code}</span>
         </div>
 
         {/* Main grid */}
         <div className="grid gap-12 lg:grid-cols-2">
-          {/* Image placeholder */}
+          {/* Image */}
           <div className="aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900/60">
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-800 via-zinc-900 to-black">
-              <div className="text-center">
-                <p className="text-[10px] uppercase tracking-[0.25em] text-zinc-600">Product Code</p>
-                <p className="mt-2 text-3xl font-black text-zinc-400">{product.code}</p>
-                <p className="mt-1 text-xs text-zinc-600">{product.subCategory}</p>
+            {product.image ? (
+              <div className="relative h-full w-full">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
-            </div>
+            ) : (
+              <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-800 via-zinc-900 to-black">
+                <div className="text-center">
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-zinc-600">Product Code</p>
+                  <p className="mt-2 text-3xl font-black text-zinc-400">{product.code}</p>
+                  <p className="mt-1 text-xs text-zinc-600">{product.subCategory}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Details */}
@@ -92,9 +120,9 @@ export default async function ProductDetailPage({
             {/* Specs */}
             <div className="mb-8 grid grid-cols-2 gap-3">
               {[
-                { label: "MOQ", value: `${product.moq} pieces` },
-                { label: "Sizes", value: product.sizes },
-                { label: "Colors", value: product.colors },
+                { label: "MOQ",      value: `${product.moq} pieces` },
+                { label: "Sizes",    value: product.sizes   || "—" },
+                { label: "Colors",   value: product.colors  || "—" },
                 { label: "Currency", value: product.currency },
               ].map((s) => (
                 <div key={s.label} className="rounded-xl border border-white/[0.07] bg-zinc-900/50 p-4">
@@ -109,7 +137,9 @@ export default async function ProductDetailPage({
 
             {/* WhatsApp inquiry */}
             <a
-              href={`https://wa.me/923001234567?text=${encodeURIComponent(`Hello, I am interested in:\n\nProduct: ${product.subCategory}\nCode: ${product.code}\nCategory: ${product.mainCategory}\n\nPlease share pricing, customization options, and next steps.\n\nThank you.`)}`}
+              href={`https://wa.me/923001234567?text=${encodeURIComponent(
+                `Hello, I am interested in:\n\nProduct: ${product.subCategory}\nCode: ${product.code}\nCategory: ${product.mainCategory}\n\nPlease share pricing, customization options, and next steps.\n\nThank you.`
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 px-5 py-3 text-sm font-semibold text-[#25D366] transition-colors hover:bg-[#25D366]/20"
@@ -135,7 +165,7 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        {/* Related */}
+        {/* Related products */}
         {related.length > 0 && (
           <div className="mt-20">
             <h2 className="mb-8 text-xl font-black uppercase text-white">More in {product.subCategory}</h2>
@@ -143,7 +173,7 @@ export default async function ProductDetailPage({
               {related.map((p) => (
                 <Link
                   key={p.id}
-                  href={productUrl(p)}
+                  href={`/products/${category}/${subcategory}/${p.slug}`}
                   className="group rounded-xl border border-white/[0.07] bg-zinc-900/60 p-5 transition-colors hover:border-red-500/20"
                 >
                   <p className="font-mono text-xs text-zinc-500">{p.code}</p>

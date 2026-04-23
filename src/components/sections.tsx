@@ -28,7 +28,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { AnimatedSection } from "@/components/animated-section";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];

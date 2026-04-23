@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, MessageCircle, Gauge, Timer, PackageCheck, Plane, Ruler, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, MessageCircle, Gauge, Timer, PackageCheck, Plane, Ruler } from "lucide-react";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 

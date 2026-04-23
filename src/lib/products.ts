@@ -20,6 +20,64 @@ export interface Product {
   tags: string[];
 }
 
+// ─── DB Product (shape returned by MongoDB API) ───────────────────────────────
+
+export interface DbCategory {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+export interface DbSubcategory {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+export interface DbProduct {
+  _id: string;
+  code: string;
+  name: string;
+  slug: string;
+  categoryId: DbCategory;
+  subcategoryId?: DbSubcategory;
+  shortDescription?: string;
+  fullDescription?: string;
+  materials?: string;
+  sizes?: string;
+  colors?: string;
+  moq: number;
+  price: number | null;
+  currency: string;
+  image: string;
+  gallery: string[];
+  tags: string[];
+  isActive: boolean;
+  isFeatured: boolean;
+}
+
+/** Convert a DbProduct (or lean Mongoose doc) to the legacy Product shape used by client components */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function dbProductToProduct(p: any): Product {
+  return {
+    id:           p._id?.toString() ?? "",
+    code:         p.code,
+    name:         p.name,
+    slug:         p.slug,
+    mainCategory: (p.categoryId?.name ?? "") as MainCategory,
+    subCategory:  p.subcategoryId?.name ?? p.categoryId?.name ?? "",
+    description:  p.shortDescription ?? "",
+    sizes:        p.sizes ?? "",
+    colors:       p.colors ?? "",
+    image:        p.image ?? "",
+    moq:          p.moq,
+    price:        p.price,
+    currency:     p.currency,
+    isActive:     p.isActive,
+    tags:         p.tags ?? [],
+  };
+}
+
 // ─── Routing helpers ──────────────────────────────────────────────────────────
 
 export const CATEGORY_SLUGS: Record<MainCategory, string> = {

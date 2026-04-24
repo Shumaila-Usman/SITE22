@@ -821,7 +821,7 @@ export function ContactPreview() {
             </FadeUp>
             <FadeUp delay={0.3} className="flex flex-wrap gap-3">
               <motion.a
-                href="https://wa.me/923001234567"
+                href="https://wa.me/923375917017"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ y: -2, scale: 1.02 }}
@@ -926,7 +926,7 @@ export function CTASection() {
                 </Link>
               </motion.div>
               <motion.a
-                href="https://wa.me/923001234567"
+                href="https://wa.me/923375917017"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ y: -2 }}

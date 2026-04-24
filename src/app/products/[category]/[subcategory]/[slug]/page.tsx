@@ -137,7 +137,7 @@ export default async function ProductDetailPage({
 
             {/* WhatsApp inquiry */}
             <a
-              href={`https://wa.me/923001234567?text=${encodeURIComponent(
+              href={`https://wa.me/923375917017?text=${encodeURIComponent(
                 `Hello, I am interested in:\n\nProduct: ${product.subCategory}\nCode: ${product.code}\nCategory: ${product.mainCategory}\n\nPlease share pricing, customization options, and next steps.\n\nThank you.`
               )}`}
               target="_blank"
@@ -147,6 +147,9 @@ export default async function ProductDetailPage({
               <MessageCircle className="h-4 w-4" />
               Inquire on WhatsApp
             </a>
+            <p className="mt-2 text-center text-[10px] text-zinc-500">
+              WhatsApp opens with a pre-filled message — just tap <strong className="text-zinc-400">Send</strong> to submit your inquiry.
+            </p>
 
             {/* Trust notes */}
             <div className="mt-8 space-y-2 border-t border-white/[0.06] pt-6">

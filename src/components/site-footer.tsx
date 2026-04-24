@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Linkedin } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -19,15 +19,15 @@ const CARDS = [
   {
     label: "Contact Us",
     items: [
-      { icon: Phone, text: "+92 300 000 0000" },
-      { icon: Mail, text: "export@megacoreintl.com" },
+      { icon: Phone, text: "+92 337 5917017" },
+      { icon: Mail, text: "megacoreintl@gmail.com\ninfo@megacoreintl.com" },
     ],
   },
   {
     label: "Manufacturing",
     sublabel: "Facility",
     items: [
-      { icon: MapPin, text: "Industrial Zone, Sialkot\nPakistan — 51310" },
+      { icon: MapPin, text: "Rangers Road, Sialkot\nPakistan — 51300" },
     ],
     hours: [
       { day: "Mon – Fri", time: "9:00 AM – 6:00 PM" },
@@ -184,9 +184,9 @@ export function SiteFooter() {
         {/* ── Social icons ── */}
         <div className="flex justify-center gap-3 pb-10">
           {[
-            { icon: Instagram, href: "#", label: "Instagram" },
-            { icon: Twitter, href: "#", label: "Twitter" },
-            { icon: Linkedin, href: "#", label: "LinkedIn" },
+            { icon: Instagram, href: "https://www.instagram.com/megacoreintl?igsh=MTN3aWhrbHdocjVlbA==", label: "Instagram" },
+            { icon: Linkedin,  href: "https://www.linkedin.com/posts/megacore-international_megacoreintl-megacore-manufacturing-activity-7452815240766926848-YfL6?utm_source=share&utm_medium=member_android&rcm=ACoAAEUOknEB9iW3C4N2oROFWbjw2WCUslDS3RU", label: "LinkedIn" },
+            { icon: Facebook,  href: "https://www.facebook.com/share/18QyprHT3P/", label: "Facebook" },
           ].map(({ icon: Icon, href, label }) => (
             <motion.a
               key={label}

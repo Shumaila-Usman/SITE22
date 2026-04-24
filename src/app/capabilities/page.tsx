@@ -56,7 +56,7 @@ export default function CapabilitiesPage() {
               { icon: Ruler, title: "Custom Sizes & Fits", desc: "Graded sizing from XS to 3XL, plus custom size charts for specific markets or athletic requirements." },
               { icon: Zap, title: "Custom Fabrics & Colors", desc: "Access to a wide range of performance fabrics — polyester, nylon, spandex, cotton blends — in any Pantone color." },
               { icon: Factory, title: "Full Production Control", desc: "Vertically integrated facility means every stage — cutting, sewing, finishing — is managed in-house." },
-              { icon: Globe2, title: "Export-Ready Delivery", desc: "All OEM orders are packed, documented, and dispatched to international standards. FOB, CIF, EXW available." },
+              { icon: Globe2, title: "Export-Ready Delivery", desc: "All OEM orders are packed, documented, and dispatched to international standards. FOB or EXW available." },
             ].map((f, i) => {
               const Icon = f.icon;
               return (

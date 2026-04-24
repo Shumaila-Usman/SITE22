@@ -103,7 +103,7 @@ export const useWishlistStore = create<WishlistState>()(
 
 // ─── WhatsApp message generator ───────────────────────────────────────────────
 
-const WHATSAPP_NUMBER = "923001234567"; // replace with real number
+const WHATSAPP_NUMBER = "923375917017";
 
 export function generateWhatsAppURL(
   items: WishlistItem[],

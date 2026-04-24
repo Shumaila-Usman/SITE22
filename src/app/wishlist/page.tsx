@@ -89,6 +89,9 @@ function BuyerDetailsModal({
                   Open WhatsApp
                 </button>
               </div>
+              <p className="mt-2 text-center text-[10px] text-zinc-500">
+                WhatsApp opens with your message pre-filled — tap <strong className="text-zinc-400">Send</strong> to submit
+              </p>
             </div>
           </motion.div>
         </>
@@ -351,7 +354,7 @@ export default function WishlistPage() {
             </motion.button>
 
             <p className="mt-3 text-center text-[10px] text-zinc-600">
-              Opens WhatsApp with your product list pre-filled
+              Opens WhatsApp with your product list pre-filled — tap <strong className="text-zinc-500">Send</strong> to submit your inquiry
             </p>
           </motion.div>
         </div>

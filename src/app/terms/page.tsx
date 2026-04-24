@@ -68,7 +68,7 @@ const sections = [
     content: [
       "Megacore International ships globally. All major international markets are served.",
       "Export documentation including commercial invoice, packing list, and certificate of origin is provided as standard.",
-      "Shipping terms (FOB, CIF, EXW, etc.) are agreed upon at the order confirmation stage.",
+      "Shipping terms (FOB or EXW) are agreed upon at the order confirmation stage.",
       "Megacore International is not liable for delays caused by customs clearance, freight carriers, or force majeure events.",
       "Buyers are responsible for import duties, taxes, and customs clearance in their country.",
     ],

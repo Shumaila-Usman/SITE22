@@ -100,7 +100,7 @@ function EditorSection({ title, icon: Icon, children }: {
 }
 
 export default function CustomizePage() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const [authOpen, setAuthOpen]   = useState(false);
   const [config, setConfig]       = useState<OutfitConfig>({ ...DEFAULT_CONFIG });
   const [title, setTitle]         = useState("My Custom Design");
@@ -149,6 +149,14 @@ export default function CustomizePage() {
       "I am contacting you from the Megacore International website.",
       "I have created a customized outfit design and would like to discuss this order.",
       "",
+      user ? [
+        "Account Details:",
+        `Name: ${user.name}`,
+        `Email: ${user.email}`,
+        user.company ? `Company: ${user.company}` : null,
+        user.country ? `Country: ${user.country}` : null,
+      ].filter(Boolean).join("\n") : null,
+      user ? "" : null,
       "Design Details:",
       `Product Type: ${cap(t)}`,
       savedId ? `Design ID: ${savedId}` : `Design Title: ${title}`,
@@ -168,7 +176,7 @@ export default function CustomizePage() {
       "Thank you.",
     ].filter(Boolean).join("\n");
 
-    window.open(`https://wa.me/923001234567?text=${encodeURIComponent(lines)}`, "_blank");
+    window.open(`https://wa.me/923375917017?text=${encodeURIComponent(lines)}`, "_blank");
   }
 
   return (
@@ -321,6 +329,9 @@ export default function CustomizePage() {
                       <MessageCircle className="h-4 w-4" />WhatsApp
                     </button>
                   </div>
+                  <p className="mt-2 text-center text-[10px] text-zinc-500">
+                    WhatsApp opens with your design details — tap <strong className="text-zinc-400">Send</strong> to submit your inquiry.
+                  </p>
                   {saved && savedId && (
                     <div className="mt-3 rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-2 text-xs text-green-400">
                       ✓ Design saved · ID: <span className="font-mono">{savedId.slice(-8)}</span>

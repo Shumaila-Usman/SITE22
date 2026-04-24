@@ -262,6 +262,15 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
                   Terms &amp; Policy
                 </a>
               </p>
+
+              {tab === "login" && (
+                <p className="mt-3 text-center text-[11px] text-zinc-600">
+                  Admin?{" "}
+                  <a href="/admin/login" className="text-zinc-400 underline hover:text-white">
+                    Sign in as Admin
+                  </a>
+                </p>
+              )}
             </div>
           </motion.div>
         </motion.div>

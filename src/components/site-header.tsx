@@ -87,19 +87,22 @@ export function SiteHeader() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const wishlistCount = useWishlistStore((s) => s.items.length);
 
-  // Hide header while intro is playing (only on first visit)
+  // Hide header while intro is playing — desktop only (intro never runs on mobile)
   useEffect(() => {
+    const isDesktop = window.innerWidth >= 1024;
+    if (!isDesktop) {
+      setIntroVisible(false);
+      return;
+    }
     const KEY = "mci_intro_done";
     if (sessionStorage.getItem(KEY)) {
       setIntroVisible(false);
     } else {
       setIntroVisible(true);
-      // Listen for intro completion — page.tsx sets this key then dispatches storage event
       function onStorage() {
         if (sessionStorage.getItem(KEY)) setIntroVisible(false);
       }
       window.addEventListener("storage", onStorage);
-      // Also poll — storage event doesn't fire in same tab
       const poll = setInterval(() => {
         if (sessionStorage.getItem(KEY)) { setIntroVisible(false); clearInterval(poll); }
       }, 200);

@@ -87,7 +87,7 @@ export default function MyDesignsPage() {
       "Thank you.",
     ].filter(Boolean).join("\n");
 
-    window.open(`https://wa.me/923001234567?text=${encodeURIComponent(lines)}`, "_blank");
+    window.open(`https://wa.me/923375917017?text=${encodeURIComponent(lines)}`, "_blank");
   }
 
   if (!isAuthenticated) {
@@ -210,6 +210,9 @@ export default function MyDesignsPage() {
                         {deleting === d._id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                       </button>
                     </div>
+                    <p className="mt-1.5 text-center text-[10px] text-zinc-600">
+                      Opens WhatsApp — tap <strong className="text-zinc-500">Send</strong> to submit
+                    </p>
                   </div>
                 </motion.div>
               );

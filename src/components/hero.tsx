@@ -34,10 +34,6 @@ const BG_CLOTHES = [
   { src: "/images/clothes/cloth-5.png",  left: "43%", top: "1%",  size: 140, rot:   8, opacity: 0.13, floatY: 16, floatDur: 11, delay: 0.4  },
   { src: "/images/clothes/cloth-6.png",  left: "88%", top: "33%", size: 110, rot: -30, opacity: 0.15, floatY: 24, floatDur: 8,  delay: 3    },
   { src: "/images/clothes/cloth-7.png",  left: "1%",  top: "36%", size: 120, rot:  18, opacity: 0.13, floatY: 12, floatDur: 12, delay: 1    },
-  { src: "/images/clothes/cloth-8.png",  left: "56%", top: "70%", size: 105, rot: -12, opacity: 0.14, floatY: 18, floatDur: 9,  delay: 2.5  },
-  { src: "/images/clothes/cloth-9.png",  left: "30%", top: "65%", size: 118, rot:  22, opacity: 0.12, floatY: 15, floatDur: 10, delay: 1.2  },
-  { src: "/images/clothes/cloth-10.png", left: "72%", top: "18%", size: 108, rot: -18, opacity: 0.13, floatY: 20, floatDur: 8,  delay: 0.6  },
-  { src: "/images/clothes/cloth-11.png", left: "22%", top: "20%", size: 122, rot:  12, opacity: 0.12, floatY: 16, floatDur: 11, delay: 1.8  },
 ];
 
 function HeroClothingBg({ slideId }: { slideId: number }) {

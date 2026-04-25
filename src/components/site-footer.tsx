@@ -19,15 +19,16 @@ const CARDS = [
   {
     label: "Contact Us",
     items: [
-      { icon: Phone, text: "0337 7270001" },
-      { icon: Mail, text: "megacoreintl@gmail.com\ninfo@megacoreintl.com" },
+      { icon: Phone,  text: "0337 7270001",                              href: "tel:+923377270001" },
+      { icon: Mail,   text: "megacoreintl@gmail.com",                    href: "mailto:megacoreintl@gmail.com" },
+      { icon: Mail,   text: "info@megacoreintl.com",                     href: "mailto:info@megacoreintl.com" },
     ],
   },
   {
     label: "Manufacturing",
     sublabel: "Facility",
     items: [
-      { icon: MapPin, text: "Rangers Road, Sialkot\nPakistan — 51300" },
+      { icon: MapPin, text: "Rangers Road, Sialkot\nPakistan — 51300",   href: "https://maps.google.com/?q=Rangers+Road+Sialkot+Pakistan+51300" },
     ],
     hours: [
       { day: "Mon – Fri", time: "9:00 AM – 6:00 PM" },
@@ -39,7 +40,7 @@ const CARDS = [
     label: "Export",
     sublabel: "Inquiries",
     items: [
-      { icon: MapPin, text: "Global Shipping\nAll Major Markets" },
+      { icon: MapPin, text: "Global Shipping\nAll Major Markets", href: "mailto:megacoreintl@gmail.com" },
     ],
     hours: [
       { day: "Response Time", time: "Within 24 hrs" },
@@ -151,7 +152,7 @@ export function SiteFooter() {
               <div className="mb-4 space-y-3">
                 {card.items.map((item, ii) => {
                   const Icon = item.icon;
-                  return (
+                  const inner = (
                     <div key={ii} className="flex items-start gap-3">
                       <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10">
                         <Icon className="h-3.5 w-3.5 text-red-400" />
@@ -161,6 +162,17 @@ export function SiteFooter() {
                       </span>
                     </div>
                   );
+                  return item.href ? (
+                    <a
+                      key={ii}
+                      href={item.href}
+                      target={item.href.startsWith("http") ? "_blank" : undefined}
+                      rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      className="block transition-opacity hover:opacity-80"
+                    >
+                      {inner}
+                    </a>
+                  ) : inner;
                 })}
               </div>
 

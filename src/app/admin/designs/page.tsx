@@ -7,6 +7,14 @@ import { Eye, Loader2 } from "lucide-react";
 import { OutfitPreview, OutfitConfig } from "@/components/outfit-preview";
 
 interface DesignUser { _id: string; name: string; email: string; company?: string; country?: string }
+interface StripeInfo {
+  enabled: boolean; position: string; count: number;
+  thickness: string; color: string; color2?: string; color3?: string; bothSides?: boolean;
+}
+interface PanelInfo {
+  chestPanel?: string; sidePanel?: string; sleevePanel?: string;
+  cuffColor?: string; collarColor?: string;
+}
 interface Design {
   _id: string;
   userId: DesignUser;
@@ -25,6 +33,7 @@ interface Design {
   fabricPattern: string;
   inquiryStatus: string;
   createdAt: string;
+  designConfig?: { stripes?: StripeInfo; panels?: PanelInfo };
 }
 
 const STATUSES = ["draft","sent","reviewed","in_progress","completed"];
@@ -127,6 +136,8 @@ export default function AdminDesignsPage() {
                               logoUrl: d.logoUrl, logoPosition: d.logoPosition as OutfitConfig["logoPosition"],
                               customText: d.customText, customNumber: d.customNumber,
                               fabricPattern: d.fabricPattern as OutfitConfig["fabricPattern"],
+                              stripes: d.designConfig?.stripes as OutfitConfig["stripes"],
+                              panels:  d.designConfig?.panels  as OutfitConfig["panels"],
                             }}
                             className="w-full h-full"
                           />
@@ -194,6 +205,8 @@ export default function AdminDesignsPage() {
                   logoUrl: selected.logoUrl, logoPosition: selected.logoPosition as OutfitConfig["logoPosition"],
                   customText: selected.customText, customNumber: selected.customNumber,
                   fabricPattern: selected.fabricPattern as OutfitConfig["fabricPattern"],
+                  stripes: selected.designConfig?.stripes as OutfitConfig["stripes"],
+                  panels:  selected.designConfig?.panels  as OutfitConfig["panels"],
                 }}
                 className="w-full h-full"
               />
@@ -240,6 +253,60 @@ export default function AdminDesignsPage() {
                 ))}
               </div>
             </div>
+
+            {/* Stripe config */}
+            {selected.designConfig?.stripes?.enabled && (
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
+                <p className="mb-2 text-[10px] uppercase tracking-wider text-zinc-500">Stripe Configuration</p>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {[
+                    { label: "Position",  value: selected.designConfig.stripes.position },
+                    { label: "Count",     value: String(selected.designConfig.stripes.count) },
+                    { label: "Thickness", value: selected.designConfig.stripes.thickness },
+                    { label: "Both Sides",value: selected.designConfig.stripes.bothSides !== false ? "Yes" : "No" },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="flex items-center justify-between rounded bg-white/[0.03] px-2 py-1">
+                      <span className="text-zinc-500">{label}</span>
+                      <span className="text-white capitalize">{value}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-[10px] text-zinc-500">Stripe Colors:</span>
+                  {[
+                    selected.designConfig.stripes.color,
+                    selected.designConfig.stripes.count >= 2 ? selected.designConfig.stripes.color2 : null,
+                    selected.designConfig.stripes.count >= 3 ? selected.designConfig.stripes.color3 : null,
+                  ].filter(Boolean).map((c, i) => (
+                    <div key={i} className="flex items-center gap-1">
+                      <div className="h-4 w-4 rounded-full border border-white/20" style={{ backgroundColor: c! }} />
+                      <span className="font-mono text-[10px] text-zinc-400">{c}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Panel colors */}
+            {selected.designConfig?.panels && (
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
+                <p className="mb-2 text-[10px] uppercase tracking-wider text-zinc-500">Panel Colors</p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Chest",  color: selected.designConfig.panels.chestPanel },
+                    { label: "Side",   color: selected.designConfig.panels.sidePanel },
+                    { label: "Sleeve", color: selected.designConfig.panels.sleevePanel },
+                    { label: "Cuff",   color: selected.designConfig.panels.cuffColor },
+                    { label: "Collar", color: selected.designConfig.panels.collarColor },
+                  ].filter(p => p.color).map(({ label, color }) => (
+                    <div key={label} className="flex items-center gap-1.5">
+                      <div className="h-4 w-4 rounded-full border border-white/20" style={{ backgroundColor: color }} />
+                      <span className="text-xs text-zinc-400">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Status update */}
             <div>

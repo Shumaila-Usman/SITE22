@@ -31,13 +31,21 @@ export function ProductCard({ product, className }: ProductCardProps) {
       >
         {/* Image area */}
         <Link href={productUrl(product)} className="relative block aspect-[4/3] overflow-hidden bg-zinc-800/60">
-          {/* Placeholder gradient — swap with <Image> when real photos available */}
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 via-zinc-900 to-black" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-              {product.code}
-            </span>
-          </div>
+          {product.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={product.image}
+              alt={product.name}
+              className="absolute inset-0 h-full w-full object-contain p-3 transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            /* Fallback placeholder when no image is set */
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-800 via-zinc-900 to-black">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+                {product.code}
+              </span>
+            </div>
+          )}
           {/* Hover overlay */}
           <div className="absolute inset-0 bg-red-600/0 transition-colors duration-300 group-hover:bg-red-600/[0.06]" />
         </Link>

@@ -27,6 +27,10 @@ interface SavedDesign {
   fabricPattern: string;
   inquiryStatus: string;
   createdAt: string;
+  designConfig?: {
+    stripes?: OutfitConfig["stripes"];
+    panels?:  OutfitConfig["panels"];
+  };
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -87,7 +91,7 @@ export default function MyDesignsPage() {
       "Thank you.",
     ].filter(Boolean).join("\n");
 
-    window.open(`https://wa.me/923375917017?text=${encodeURIComponent(lines)}`, "_blank");
+    window.open(`https://wa.me/923377270001?text=${encodeURIComponent(lines)}`, "_blank");
   }
 
   if (!isAuthenticated) {
@@ -164,6 +168,8 @@ export default function MyDesignsPage() {
                 customText:      d.customText,
                 customNumber:    d.customNumber,
                 fabricPattern:   d.fabricPattern as OutfitConfig["fabricPattern"],
+                stripes:         d.designConfig?.stripes,
+                panels:          d.designConfig?.panels,
               };
 
               return (

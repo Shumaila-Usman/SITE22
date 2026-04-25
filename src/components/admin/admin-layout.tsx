@@ -5,17 +5,18 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutDashboard, Users, Tag, Layers, Package,
-  LogOut, Menu, ChevronRight, Settings, Paintbrush,
+  LogOut, Menu, ChevronRight, Settings, Paintbrush, FolderUp,
 } from "lucide-react";
 import Image from "next/image";
 
 const NAV = [
-  { href: "/admin",               label: "Dashboard",      icon: LayoutDashboard },
-  { href: "/admin/users",         label: "Users",          icon: Users },
-  { href: "/admin/categories",    label: "Categories",     icon: Tag },
-  { href: "/admin/subcategories", label: "Subcategories",  icon: Layers },
-  { href: "/admin/products",      label: "Products",       icon: Package },
-  { href: "/admin/designs",       label: "Custom Designs", icon: Paintbrush },
+  { href: "/admin",                    label: "Dashboard",         icon: LayoutDashboard },
+  { href: "/admin/users",              label: "Users",             icon: Users },
+  { href: "/admin/categories",         label: "Categories",        icon: Tag },
+  { href: "/admin/subcategories",      label: "Subcategories",     icon: Layers },
+  { href: "/admin/products",           label: "Products",          icon: Package },
+  { href: "/admin/designs",            label: "Custom Designs",    icon: Paintbrush },
+  { href: "/admin/uploaded-designs",   label: "Uploaded Designs",  icon: FolderUp },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

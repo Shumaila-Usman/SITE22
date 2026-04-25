@@ -91,7 +91,7 @@ export default async function ProductDetailPage({
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className="object-contain p-4"
                 />
               </div>
             ) : (
@@ -137,7 +137,7 @@ export default async function ProductDetailPage({
 
             {/* WhatsApp inquiry */}
             <a
-              href={`https://wa.me/923375917017?text=${encodeURIComponent(
+              href={`https://wa.me/923377270001?text=${encodeURIComponent(
                 `Hello, I am interested in:\n\nProduct: ${product.subCategory}\nCode: ${product.code}\nCategory: ${product.mainCategory}\n\nPlease share pricing, customization options, and next steps.\n\nThank you.`
               )}`}
               target="_blank"

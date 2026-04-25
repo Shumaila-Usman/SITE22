@@ -11,13 +11,14 @@ import { useAuthStore, useWishlistStore } from "@/lib/store";
 import { AuthModal } from "@/components/auth-modal";
 
 const NAV_LINKS = [
-  { href: "/",           label: "Home" },
-  { href: "/about",      label: "About" },
-  { href: "/products",   label: "Products" },
-  { href: "/customize",  label: "Customize" },
-  { href: "/capabilities", label: "Custom Mfg" },
-  { href: "/process",    label: "MOQ & Process" },
-  { href: "/contact",    label: "Contact" },
+  { href: "/",              label: "Home" },
+  { href: "/about",         label: "About" },
+  { href: "/products",      label: "Products" },
+  { href: "/customize",     label: "Customize" },
+  { href: "/upload-design", label: "Upload Design" },
+  { href: "/capabilities",  label: "Custom Mfg" },
+  { href: "/process",       label: "MOQ & Process" },
+  { href: "/contact",       label: "Contact" },
 ];
 
 // Animated gradient — slow horizontal drift, premium feel

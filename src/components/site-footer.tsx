@@ -19,7 +19,7 @@ const CARDS = [
   {
     label: "Contact Us",
     items: [
-      { icon: Phone, text: "+92 337 5917017" },
+      { icon: Phone, text: "0337 7270001" },
       { icon: Mail, text: "megacoreintl@gmail.com\ninfo@megacoreintl.com" },
     ],
   },

@@ -26,7 +26,7 @@ export default function ContactPage() {
   function handleWhatsApp(e: React.FormEvent) {
     e.preventDefault();
     const msg = `Hello, I am contacting you from the Megacore International website.\n\nName: ${form.name}\nCompany: ${form.company}\nEmail: ${form.email}\nCountry: ${form.country}\nProduct Category: ${form.category}\nQuantity: ${form.quantity}\n\nMessage:\n${form.message}\n\nThank you.`;
-    window.open(`https://wa.me/923375917017?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/923377270001?text=${encodeURIComponent(msg)}`, "_blank");
     setSent(true);
   }
 
@@ -52,10 +52,10 @@ export default function ContactPage() {
                 <h3 className="mb-6 text-sm font-bold uppercase tracking-[0.2em] text-zinc-300">Contact Details</h3>
                 <div className="space-y-5">
                   {[
-                    { icon: MessageCircle, label: "WhatsApp", value: "+92 337 5917017", href: "https://wa.me/923375917017", color: "text-[#25D366]" },
+                    { icon: MessageCircle, label: "WhatsApp", value: "0337 7270001", href: "https://wa.me/923377270001", color: "text-[#25D366]" },
                     { icon: Mail, label: "Email", value: "megacoreintl@gmail.com", href: "mailto:megacoreintl@gmail.com", color: "text-red-400" },
                     { icon: Mail, label: "Email", value: "info@megacoreintl.com", href: "mailto:info@megacoreintl.com", color: "text-red-400" },
-                    { icon: Phone, label: "Phone", value: "+92 337 5917017", href: "tel:+923375917017", color: "text-zinc-300" },
+                    { icon: Phone, label: "Phone", value: "0337 7270001", href: "tel:+923377270001", color: "text-zinc-300" },
                     { icon: Globe2, label: "Location", value: "Rangers Road, Sialkot — 51300", href: "#", color: "text-zinc-300" },
                   ].map((c) => {
                     const Icon = c.icon;
@@ -90,7 +90,7 @@ export default function ContactPage() {
             </FadeUp>
 
             <FadeUp delay={0.2}>
-              <a href="https://wa.me/923375917017" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/923377270001" target="_blank" rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#25D366] py-4 text-sm font-bold uppercase tracking-widest text-white shadow-[0_0_30px_rgba(37,211,102,0.2)] transition-all hover:bg-[#1fba58] hover:shadow-[0_0_40px_rgba(37,211,102,0.35)]">
                 <MessageCircle className="h-5 w-5" /> Chat on WhatsApp
               </a>

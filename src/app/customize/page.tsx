@@ -1,189 +1,224 @@
 ﻿"use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Palette, Upload, Type, Layers, Save, MessageCircle,
-  Lock, ChevronRight, Check, Loader2, Shirt, Eye, Shield,
-  Minus, Plus, ChevronDown, Zap, Grid3X3,
+  Palette,
+  Upload,
+  Type,
+  Save,
+  MessageCircle,
+  Lock,
+  ChevronRight,
+  Check,
+  Loader2,
+  Shirt,
+  Eye,
+  Shield,
+  ChevronDown,
+  Zap,
+  ArrowLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 import { AuthModal } from "@/components/auth-modal";
+import { TemplateSelector } from "@/components/template-selector";
+import { GarmentPreviewPanel } from "@/components/customize/garment-preview-panel";
+import type {
+  GarmentSide,
+  GarmentTemplate,
+  MultiSideDesign,
+  SideDesignConfig,
+  SideStripeConfig,
+  StripePosition,
+  StripeThickness,
+} from "@/lib/customization-types";
 import {
-  OutfitPreview, OutfitConfig, ProductTemplate, FabricPattern,
-  LogoPosition, StripeConfig, StripePosition, StripeCount,
-  StripeThickness, PanelConfig,
-} from "@/components/outfit-preview";
-
-// ─── Constants ────────────────────────────────────────────────────────────────
+  DEFAULT_SIDE_CONFIG,
+  DEFAULT_STRIPE,
+  SIDE_LABELS,
+  makeDefaultMultiSide,
+} from "@/lib/customization-types";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-const TEMPLATES: { id: ProductTemplate; label: string; desc: string; icon: string }[] = [
-  { id: "jersey",    label: "Jersey",    desc: "Sports jersey",    icon: "👕" },
-  { id: "shirt",     label: "Shirt",     desc: "Button-up shirt",  icon: "👔" },
-  { id: "trouser",   label: "Trouser",   desc: "Sports trousers",  icon: "👖" },
-  { id: "tracksuit", label: "Tracksuit", desc: "Full set",         icon: "🥋" },
-  { id: "hoodie",    label: "Hoodie",    desc: "Zip hoodie",       icon: "🧥" },
-  { id: "shorts",    label: "Shorts",    desc: "Athletic shorts",  icon: "🩳" },
-];
-
-const PATTERNS: { id: FabricPattern; label: string; preview: string }[] = [
-  { id: "solid",     label: "Solid",     preview: "■" },
-  { id: "gradient",  label: "Gradient",  preview: "▣" },
-  { id: "stripes",   label: "Stripes",   preview: "≡" },
-  { id: "diagonal",  label: "Diagonal",  preview: "╱" },
-  { id: "geometric", label: "Geometric", preview: "◆" },
-  { id: "mesh",      label: "Mesh",      preview: "⊞" },
-  { id: "chevron",   label: "Chevron",   preview: "∧" },
-  { id: "honeycomb", label: "Honeycomb", preview: "⬡" },
-  { id: "camo",      label: "Camo",      preview: "✦" },
-  { id: "panel",     label: "Panel",     preview: "▦" },
+const PRESET_COLORS = [
+  "#EF4444",
+  "#F97316",
+  "#EAB308",
+  "#22C55E",
+  "#3B82F6",
+  "#8B5CF6",
+  "#EC4899",
+  "#FFFFFF",
+  "#000000",
+  "#1a1a1a",
+  "#DC2626",
+  "#0EA5E9",
+  "#14B8A6",
+  "#F59E0B",
+  "#6366F1",
 ];
 
 const STRIPE_POSITIONS: { id: StripePosition; label: string }[] = [
-  { id: "side",            label: "Side" },
-  { id: "sleeve",          label: "Sleeve" },
-  { id: "shoulder",        label: "Shoulder" },
-  { id: "chest",           label: "Chest" },
+  { id: "side", label: "Side" },
+  { id: "sleeve", label: "Sleeve" },
+  { id: "shoulder", label: "Shoulder" },
+  { id: "chest", label: "Chest" },
   { id: "vertical-center", label: "Center" },
 ];
 
-const LOGO_POSITIONS: { id: LogoPosition; label: string }[] = [
-  { id: "chest",  label: "Chest" },
-  { id: "back",   label: "Back" },
-  { id: "sleeve", label: "Sleeve" },
-  { id: "none",   label: "None" },
+const STRIPE_THICKNESS: { id: StripeThickness; label: string }[] = [
+  { id: "thin", label: "Thin" },
+  { id: "medium", label: "Medium" },
+  { id: "broad", label: "Broad" },
 ];
 
-const PRESET_COLORS = [
-  "#EF4444","#F97316","#EAB308","#22C55E","#3B82F6",
-  "#8B5CF6","#EC4899","#FFFFFF","#000000","#1a1a1a",
-  "#DC2626","#0EA5E9","#14B8A6","#F59E0B","#6366F1",
-  "#84CC16","#06B6D4","#A855F7","#F43F5E","#64748B",
-];
+function cap(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
-const DEFAULT_STRIPES: StripeConfig = {
-  enabled:   false,
-  position:  "side",
-  count:     1,
-  thickness: "medium",
-  color:     "#FFFFFF",
-  color2:    "#FFFFFF",
-  color3:    "#FFFFFF",
-  bothSides: true,
-};
+function formatSideBlock(label: string, c?: SideDesignConfig): string {
+  if (!c) return `${label}:\n(not configured)\n`;
+  const st = c.stripes;
+  const lines = [
+    `${label}:`,
+    `  Primary: ${c.primaryColor} · Secondary: ${c.secondaryColor} · Accent: ${c.accentColor}`,
+    st.enabled
+      ? `  Stripes: Yes · Position: ${cap(st.position)} · Thickness: ${cap(st.thickness)} · Color: ${st.color}`
+      : `  Stripes: No`,
+    c.customText ? `  Name: ${c.customText}` : `  Name: —`,
+    c.customNumber ? `  Number: ${c.customNumber}` : `  Number: —`,
+    c.logoUrl ? `  Logo: ${c.logoUrl}` : `  Logo: —`,
+    c.notes ? `  Notes: ${c.notes}` : `  Notes: —`,
+    "",
+  ];
+  return lines.join("\n");
+}
 
-const DEFAULT_PANELS: PanelConfig = {
-  chestPanel:  "#FFFFFF",
-  sidePanel:   "#FFFFFF",
-  sleevePanel: "#FFFFFF",
-  cuffColor:   "#1a1a1a",
-  collarColor: "#1a1a1a",
-};
-
-const DEFAULT_CONFIG: OutfitConfig = {
-  productTemplate: "jersey",
-  primaryColor:    "#EF4444",
-  secondaryColor:  "#FFFFFF",
-  accentColor:     "#1a1a1a",
-  sleeveColor:     "#EF4444",
-  collarColor:     "#1a1a1a",
-  stripeColor:     "#FFFFFF",
-  logoUrl:         undefined,
-  logoPosition:    "chest",
-  customText:      "",
-  customNumber:    "",
-  fabricPattern:   "solid",
-  stripes:         { ...DEFAULT_STRIPES },
-  panels:          { ...DEFAULT_PANELS },
-};
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function ColorSwatch({ value, onChange, size = "sm" }: {
-  value: string; onChange: (v: string) => void; size?: "sm" | "md";
+function ColorSwatch({
+  value,
+  onChange,
+  size = "sm",
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  size?: "sm" | "md";
 }) {
   const sz = size === "sm" ? "h-5 w-5" : "h-6 w-6";
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      {PRESET_COLORS.map(c => (
-        <button key={c} onClick={() => onChange(c)} title={c}
+    <div className="flex max-w-full flex-wrap items-center gap-1 sm:gap-1.5">
+      {PRESET_COLORS.map((c) => (
+        <button
+          key={c}
+          type="button"
+          onClick={() => onChange(c)}
+          title={c}
           className={`${sz} rounded-full border-2 transition-transform hover:scale-110 ${
-            value === c ? "border-white scale-110" : "border-transparent"
+            value === c ? "scale-110 border-white" : "border-transparent"
           }`}
           style={{ backgroundColor: c }}
         />
       ))}
       <label className="relative cursor-pointer">
-        <input type="color" value={value} onChange={e => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer" style={{ width: 28, height: 28 }} />
-        <div className={`${sz} rounded-lg border-2 border-white/20 hover:border-white/50 transition-colors`}
-          style={{ backgroundColor: value }} />
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="absolute inset-0 cursor-pointer opacity-0"
+          style={{ width: 28, height: 28 }}
+        />
+        <div
+          className={`${sz} rounded-lg border-2 border-white/20 transition-colors hover:border-white/50`}
+          style={{ backgroundColor: value }}
+        />
       </label>
     </div>
   );
 }
 
-function ColorRow({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function ColorRow({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center gap-2">
-        <div className="h-3.5 w-3.5 rounded-full border border-white/20 shrink-0" style={{ backgroundColor: value }} />
-        <span className="text-xs text-zinc-400">{label}</span>
-        <span className="ml-auto font-mono text-[10px] text-zinc-600">{value}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        <div
+          className="h-3.5 w-3.5 shrink-0 rounded-full border border-white/20"
+          style={{ backgroundColor: value }}
+        />
+        <span className="min-w-0 truncate text-xs text-zinc-400">{label}</span>
+        <span className="ml-auto hidden font-mono text-[10px] text-zinc-600 sm:inline">{value}</span>
       </div>
       <ColorSwatch value={value} onChange={onChange} />
     </div>
   );
 }
 
-function Section({ title, icon: Icon, children, defaultOpen = true }: {
-  title: string; icon: React.ElementType; children: React.ReactNode; defaultOpen?: boolean;
+function Section({
+  title,
+  icon: Icon,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  icon: React.ElementType;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-zinc-900/40 overflow-hidden">
-      <button onClick={() => setOpen(o => !o)}
-        className="flex w-full items-center gap-2.5 px-4 py-3 hover:bg-white/[0.02] transition-colors">
-        <Icon className="h-3.5 w-3.5 text-red-400 shrink-0" />
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-400 flex-1 text-left">{title}</span>
-        <ChevronDown className={`h-3.5 w-3.5 text-zinc-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+    <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-zinc-900/40">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full min-h-11 touch-manipulation items-center gap-2.5 px-3 py-3 transition-colors hover:bg-white/[0.02] sm:min-h-0 sm:px-4"
+      >
+        <Icon className="h-3.5 w-3.5 shrink-0 text-red-400" />
+        <span className="flex-1 text-left text-[10px] font-bold uppercase tracking-[0.2em] text-red-400">
+          {title}
+        </span>
+        <ChevronDown
+          className={`h-3.5 w-3.5 text-zinc-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
       </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-4 space-y-3 border-t border-white/[0.05]">
-              <div className="pt-3 space-y-3">{children}</div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && (
+        <div className="border-t border-white/[0.05] px-3 pb-4 sm:px-4">
+          <div className="space-y-3 pt-3">{children}</div>
+        </div>
+      )}
     </div>
   );
 }
 
-function ToggleGroup<T extends string>({ options, value, onChange }: {
+function ToggleGroup<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
   options: { id: T; label: string }[];
   value: T;
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {options.map(o => (
-        <button key={o.id} onClick={() => onChange(o.id)}
-          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+    <div className="flex flex-wrap gap-2">
+      {options.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          onClick={() => onChange(o.id)}
+          className={`min-h-10 touch-manipulation rounded-lg border px-3 py-2 text-xs font-medium transition-all active:opacity-90 ${
             value === o.id
               ? "border-red-500/50 bg-red-500/10 text-red-300"
               : "border-white/[0.07] text-zinc-400 hover:border-white/20 hover:text-white"
-          }`}>
+          }`}
+        >
           {o.label}
         </button>
       ))}
@@ -191,141 +226,170 @@ function ToggleGroup<T extends string>({ options, value, onChange }: {
   );
 }
 
-function CountStepper({ value, onChange, min = 1, max = 3 }: {
-  value: number; onChange: (v: number) => void; min?: number; max?: number;
-}) {
-  return (
-    <div className="flex items-center gap-2">
-      <button onClick={() => onChange(Math.max(min, value - 1))}
-        disabled={value <= min}
-        className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/[0.1] text-zinc-400 hover:text-white disabled:opacity-30 transition-colors">
-        <Minus className="h-3 w-3" />
-      </button>
-      <span className="w-6 text-center text-sm font-bold text-white">{value}</span>
-      <button onClick={() => onChange(Math.min(max, value + 1))}
-        disabled={value >= max}
-        className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/[0.1] text-zinc-400 hover:text-white disabled:opacity-30 transition-colors">
-        <Plus className="h-3 w-3" />
-      </button>
-    </div>
-  );
-}
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
 export default function CustomizePage() {
   const { isAuthenticated, user } = useAuthStore();
-  const [authOpen, setAuthOpen]   = useState(false);
-  const [config, setConfig]       = useState<OutfitConfig>({ ...DEFAULT_CONFIG });
-  const [title, setTitle]         = useState("My Custom Design");
-  const [saving, setSaving]       = useState(false);
-  const [saved, setSaved]         = useState(false);
-  const [savedId, setSavedId]     = useState<string | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [stage, setStage] = useState<"pick" | "studio">("pick");
+  const [template, setTemplate] = useState<GarmentTemplate | null>(null);
+  const [activeSide, setActiveSide] = useState<GarmentSide>("front");
+  const [multi, setMulti] = useState<MultiSideDesign>({});
+  const [title, setTitle] = useState("My Custom Design");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const update = useCallback(<K extends keyof OutfitConfig>(key: K, val: OutfitConfig[K]) => {
-    setConfig(prev => ({ ...prev, [key]: val }));
+  const currentConfig: SideDesignConfig = useMemo(() => {
+    const raw = multi[activeSide];
+    if (raw) return raw;
+    return { ...DEFAULT_SIDE_CONFIG, stripes: { ...DEFAULT_STRIPE } };
+  }, [multi, activeSide]);
+
+  const pickTemplate = useCallback((t: GarmentTemplate) => {
+    setTemplate(t);
+    setMulti(makeDefaultMultiSide(t.sides));
+    setActiveSide(t.sides[0] ?? "front");
     setSaved(false);
+    setSavedId(null);
+    setStage("studio");
   }, []);
 
-  const updateStripe = useCallback(<K extends keyof StripeConfig>(key: K, val: StripeConfig[K]) => {
-    setConfig(prev => ({
-      ...prev,
-      stripes: { ...(prev.stripes ?? DEFAULT_STRIPES), [key]: val },
-    }));
-    setSaved(false);
+  const backToPick = useCallback(() => {
+    setStage("pick");
+    setTemplate(null);
+    setMulti({});
   }, []);
 
-  const updatePanel = useCallback(<K extends keyof PanelConfig>(key: K, val: string) => {
-    setConfig(prev => ({
-      ...prev,
-      panels: { ...(prev.panels ?? DEFAULT_PANELS), [key]: val },
-    }));
-    setSaved(false);
-  }, []);
+  const patchActiveSide = useCallback(
+    (patch: Partial<SideDesignConfig>) => {
+      setMulti((prev) => {
+        const cur = prev[activeSide] ?? {
+          ...DEFAULT_SIDE_CONFIG,
+          stripes: { ...DEFAULT_STRIPE },
+        };
+        return { ...prev, [activeSide]: { ...cur, ...patch } };
+      });
+      setSaved(false);
+    },
+    [activeSide]
+  );
+
+  const patchStripes = useCallback(
+    (patch: Partial<SideStripeConfig>) => {
+      setMulti((prev) => {
+        const cur = prev[activeSide] ?? {
+          ...DEFAULT_SIDE_CONFIG,
+          stripes: { ...DEFAULT_STRIPE },
+        };
+        const stripes = { ...cur.stripes, ...patch };
+        return { ...prev, [activeSide]: { ...cur, stripes } };
+      });
+      setSaved(false);
+    },
+    [activeSide]
+  );
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!isAuthenticated) {
+      setAuthOpen(true);
+      return;
+    }
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
-    const res  = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const res = await fetch("/api/user-upload", { method: "POST", body: fd });
     const data = await res.json();
-    if (res.ok) update("logoUrl", data.url);
+    if (res.ok) patchActiveSide({ logoUrl: data.url });
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
   }
 
   async function handleSave() {
-    if (!isAuthenticated) { setAuthOpen(true); return; }
+    if (!isAuthenticated) {
+      setAuthOpen(true);
+      return;
+    }
+    if (!template) return;
     setSaving(true);
+    const sideImages: Partial<Record<GarmentSide, string>> = {};
+    for (const s of template.sides) {
+      const u = template.sideImages[s];
+      if (u) sideImages[s] = u;
+    }
+    const sides: MultiSideDesign = {};
+    for (const s of template.sides) {
+      const cfg = multi[s];
+      if (cfg) sides[s] = cfg;
+    }
     const payload = {
-      ...config,
+      version: 2 as const,
       title,
-      fabricPattern: config.fabricPattern,
-      designConfig: {
-        stripes: config.stripes,
-        panels:  config.panels,
-      },
+      templateId: template.id,
+      category: template.category,
+      sideImages,
+      sides,
     };
-    const res  = await fetch("/api/designs", {
+    const res = await fetch("/api/designs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
     const data = await res.json();
-    if (res.ok) { setSaved(true); setSavedId(data.design._id); }
+    if (res.ok) {
+      setSaved(true);
+      setSavedId(data.design._id);
+    }
     setSaving(false);
   }
 
-  function handleWhatsApp() {
-    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-    const st  = config.stripes;
+  function buildWhatsAppBody(): string {
+    if (!template) return "";
+    const sidesOrder: GarmentSide[] = ["front", "back", "left", "right"];
+    const blocks = sidesOrder
+      .filter((s) => template.sides.includes(s))
+      .map((s) => formatSideBlock(SIDE_LABELS[s].toUpperCase(), multi[s]));
+
     const lines = [
-      "Hello,",
+      "Hello, I am contacting from Megacore International.",
       "",
-      "I am contacting you from the Megacore International website.",
-      "I have created a customized outfit design and would like to discuss this order.",
+      "I created a custom design.",
       "",
-      ...(user ? [
-        "Account Details:",
-        `Name: ${user.name}`,
-        `Email: ${user.email}`,
-        ...(user.company ? [`Company: ${user.company}`] : []),
-        ...(user.country ? [`Country: ${user.country}`] : []),
-        "",
-      ] : []),
-      "Design Details:",
-      `Product Type: ${cap(config.productTemplate)}`,
-      ...(savedId ? [`Design ID: ${savedId}`] : [`Design Title: ${title}`]),
-      `Primary Color: ${config.primaryColor}`,
-      `Secondary Color: ${config.secondaryColor}`,
-      `Sleeve Color: ${config.sleeveColor}`,
-      `Collar Color: ${config.collarColor}`,
-      `Fabric Pattern: ${cap(config.fabricPattern)}`,
-      ...(st?.enabled ? [
-        `Stripes: Enabled`,
-        `Stripe Position: ${cap(st.position)}`,
-        `Stripe Count: ${st.count}`,
-        `Stripe Thickness: ${cap(st.thickness)}`,
-        `Stripe Color(s): ${[st.color, st.count >= 2 ? st.color2 : null, st.count >= 3 ? st.color3 : null].filter(Boolean).join(", ")}`,
-      ] : ["Stripes: None"]),
-      `Logo Included: ${config.logoUrl ? "Yes" : "No"}`,
-      `Logo Position: ${cap(config.logoPosition)}`,
-      ...(config.customText   ? [`Custom Name/Text: ${config.customText}`]   : []),
-      ...(config.customNumber ? [`Custom Number: ${config.customNumber}`]     : []),
+      `Garment: ${template.category}`,
+      `Template: ${template.name} (${template.id})`,
       "",
-      "Please review my design and share pricing, customization options, MOQ details, and next steps.",
+      ...blocks,
+      "Account:",
+      `Name: ${user?.name ?? ""}`,
+      `Email: ${user?.email ?? ""}`,
+      ...(user?.company ? [`Company: ${user.company}`] : []),
+      "",
+      ...(savedId ? [`Design ID: ${savedId}`, ""] : []),
+      "Please share pricing, MOQ, and next steps.",
       "",
       "Thank you.",
     ];
-    window.open(`https://wa.me/923377270001?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
+    return lines.join("\n");
   }
 
-  const stripes = config.stripes ?? DEFAULT_STRIPES;
-  const panels  = config.panels  ?? DEFAULT_PANELS;
+  function handleWhatsApp() {
+    if (!isAuthenticated) {
+      setAuthOpen(true);
+      return;
+    }
+    if (!template) return;
+    const text = buildWhatsAppBody();
+    window.open(`https://wa.me/923377270001?text=${encodeURIComponent(text)}`, "_blank");
+  }
+
+  const previewUrl =
+    template?.sideImages[activeSide] ??
+    template?.thumbnailPath ??
+    "/customization/templates/hoodie-1.png";
+
+  const stripes = currentConfig.stripes;
 
   return (
     <>
@@ -333,305 +397,348 @@ export default function CustomizePage() {
       <main className="min-h-screen bg-black">
         <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(239,68,68,0.07),transparent_60%)]" />
 
-        {/* ── Hero ── */}
-        <section className="relative px-6 pb-12 pt-28">
+        <section className="relative px-4 pb-8 pt-20 sm:px-6 sm:pb-12 sm:pt-28">
           <div className="mx-auto max-w-4xl text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE }}>
-              <span className="mb-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-red-400">
-                <span className="h-px w-6 bg-red-500" />Custom Manufacturing<span className="h-px w-6 bg-red-500" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE }}
+            >
+              <span className="mb-3 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-red-400 sm:mb-4 sm:text-[10px] sm:tracking-[0.3em]">
+                <span className="h-px w-4 bg-red-500 sm:w-6" />
+                Custom Manufacturing
+                <span className="h-px w-4 bg-red-500 sm:w-6" />
               </span>
-              <h1 className="mb-4 text-4xl font-black uppercase leading-tight text-white md:text-6xl">
-                Design Your<br />
-                <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">Custom Outfit</span>
+              <h1 className="mb-3 text-3xl font-black uppercase leading-[1.1] text-white sm:mb-4 sm:text-4xl md:text-6xl">
+                Design Your
+                <br />
+                <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">
+                  Custom Outfit
+                </span>
               </h1>
-              <p className="mx-auto max-w-xl text-[1.0625rem] leading-relaxed text-zinc-400">
-                Professional sportswear design tool — patterns, stripes, panels, logos. Build your kit and send for a quote.
+              <p className="mx-auto max-w-xl px-1 text-sm leading-relaxed text-zinc-400 sm:text-[1.0625rem]">
+                Choose a real garment template, customize each side independently, save your spec, and send it for a quote on WhatsApp.
               </p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
-              className="mt-8 flex flex-wrap justify-center gap-3">
+              className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:flex sm:flex-wrap sm:justify-center sm:gap-3"
+            >
               {[
-                { icon: Palette,  label: "Panel Colors" },
-                { icon: Zap,      label: "Stripe Control" },
-                { icon: Grid3X3,  label: "10 Patterns" },
-                { icon: Eye,      label: "Live Preview" },
-                { icon: Shield,   label: "MOQ from 50 pcs" },
+                { icon: Shirt, label: "Real garment photos" },
+                { icon: Zap, label: "Per-side controls" },
+                { icon: Eye, label: "Live summary" },
+                { icon: Shield, label: "MOQ from 50 pcs" },
               ].map(({ icon: Icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300">
-                  <Icon className="h-3 w-3 text-red-400" />{label}
+                <span
+                  key={label}
+                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-2 text-center text-[10px] leading-tight text-zinc-300 sm:w-auto sm:px-3 sm:py-1.5 sm:text-xs"
+                >
+                  <Icon className="h-3 w-3 shrink-0 text-red-400" />
+                  <span>{label}</span>
                 </span>
               ))}
             </motion.div>
           </div>
         </section>
 
-        {/* ── Studio ── */}
-        <section className="px-4 pb-24 md:px-6" id="studio">
+        <section className="px-3 pb-20 pt-2 sm:px-4 sm:pb-24 md:px-6" id="studio">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
+            <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
+              <div className="min-w-0">
                 <span className="text-[10px] uppercase tracking-[0.25em] text-red-400">Customization Studio</span>
-                <h2 className="mt-1 text-2xl font-black uppercase text-white">Design Your Outfit</h2>
+                <h2 className="mt-0.5 text-xl font-black uppercase leading-tight text-white sm:mt-1 sm:text-2xl">
+                  Customize Your Outfit
+                </h2>
               </div>
-              {isAuthenticated && (
-                <Link href="/customize/my-designs"
-                  className="flex items-center gap-1.5 rounded-lg border border-white/[0.1] px-3 py-2 text-xs text-zinc-400 hover:text-white transition-colors">
-                  My Designs <ChevronRight className="h-3 w-3" />
-                </Link>
-              )}
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
+                {stage === "studio" && (
+                  <button
+                    type="button"
+                    onClick={backToPick}
+                    className="flex min-h-11 touch-manipulation items-center justify-center gap-1.5 rounded-lg border border-white/[0.1] px-3 py-2.5 text-xs text-zinc-400 transition-colors hover:text-white sm:min-h-0"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5 shrink-0" />
+                    Change template
+                  </button>
+                )}
+                {isAuthenticated && (
+                  <Link
+                    href="/customize/my-designs"
+                    className="flex min-h-11 touch-manipulation items-center justify-center gap-1.5 rounded-lg border border-white/[0.1] px-3 py-2.5 text-xs text-zinc-400 transition-colors hover:text-white sm:min-h-0"
+                  >
+                    My Designs <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+                  </Link>
+                )}
+              </div>
             </div>
 
             {!isAuthenticated && (
-              <div className="mb-5 flex items-center gap-4 rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-4">
-                <Lock className="h-5 w-5 shrink-0 text-red-400" />
-                <div className="flex-1">
+              <div className="mb-5 flex flex-col gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-4 sm:flex-row sm:items-center sm:px-5 sm:py-4">
+                <Lock className="h-5 w-5 shrink-0 text-red-400 sm:mt-0" />
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-white">Login required to save designs</p>
-                  <p className="text-xs text-zinc-400">Preview freely — login to save and send for inquiry.</p>
+                  <p className="mt-0.5 text-xs text-zinc-400">Browse templates and design freely — sign in to save and send for inquiry.</p>
                 </div>
-                <button onClick={() => setAuthOpen(true)}
-                  className="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-500">
+                <button
+                  type="button"
+                  onClick={() => setAuthOpen(true)}
+                  className="min-h-11 w-full shrink-0 touch-manipulation rounded-lg bg-red-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-red-500 sm:w-auto sm:min-h-0 sm:py-2"
+                >
                   Login / Register
                 </button>
               </div>
             )}
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_440px]">
+            {stage === "pick" && (
+              <div className="rounded-2xl border border-white/[0.07] bg-zinc-900/30 p-4 sm:p-5 md:p-8">
+                <p className="mb-4 text-xs text-zinc-400 sm:text-sm">
+                  Select a garment. Each product uses your approved photography — when front/back (or cap side) files exist in the folder, they load automatically.
+                </p>
+                <TemplateSelector onSelect={pickTemplate} />
+              </div>
+            )}
 
-              {/* ── Live Preview ── */}
-              <div className="order-first lg:order-none">
-                <div className="sticky top-24 rounded-2xl border border-white/[0.07] bg-zinc-900/40 p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Live Preview</span>
-                    <span className="rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">
-                      {config.productTemplate.charAt(0).toUpperCase() + config.productTemplate.slice(1)}
-                    </span>
-                  </div>
-                  <div className="mx-auto flex items-center justify-center" style={{ maxWidth: 300, height: 360 }}>
-                    <OutfitPreview config={config} className="w-full h-full" />
-                  </div>
-
-                  {/* Color summary bar */}
-                  <div className="mt-4 flex items-center gap-1.5 rounded-lg border border-white/[0.06] bg-black/30 px-3 py-2">
-                    <span className="text-[10px] text-zinc-500 mr-1">Colors</span>
-                    {[config.primaryColor, config.secondaryColor, config.sleeveColor, config.collarColor, config.accentColor].map((c, i) => (
-                      <div key={i} className="h-4 w-4 rounded-full border border-white/10 shrink-0" style={{ backgroundColor: c }} title={c} />
-                    ))}
-                    {stripes.enabled && (
-                      <>
-                        <span className="text-[10px] text-zinc-600 mx-1">Stripes</span>
-                        {[stripes.color, stripes.count >= 2 ? stripes.color2 : null, stripes.count >= 3 ? stripes.color3 : null]
-                          .filter(Boolean).map((c, i) => (
-                            <div key={i} className="h-4 w-4 rounded-full border border-white/10 shrink-0" style={{ backgroundColor: c! }} />
-                          ))}
-                      </>
+            {stage === "studio" && template && (
+              <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,400px)] lg:gap-6">
+                <div className="order-first lg:order-none">
+                  <div className="space-y-4 rounded-2xl border border-white/[0.07] bg-zinc-900/40 p-4 sm:p-5 md:p-6 lg:sticky lg:top-20 xl:top-24">
+                    <div className="-mx-1 flex gap-1.5 overflow-x-auto border-b border-white/[0.06] px-1 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-4 [&::-webkit-scrollbar]:hidden">
+                      {template.sides.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setActiveSide(s)}
+                          className={`shrink-0 touch-manipulation rounded-lg border px-3 py-2.5 text-xs font-bold uppercase tracking-wider transition-all active:opacity-90 sm:py-2 ${
+                            activeSide === s
+                              ? "border-red-500/50 bg-red-500/10 text-red-300"
+                              : "border-white/[0.07] text-zinc-500 hover:border-white/20 hover:text-white"
+                          }`}
+                        >
+                          {SIDE_LABELS[s]}
+                        </button>
+                      ))}
+                    </div>
+                    <GarmentPreviewPanel
+                      imageUrl={previewUrl}
+                      activeSide={activeSide}
+                      config={currentConfig}
+                    />
+                    <div>
+                      <label className="mb-1 block text-[10px] text-zinc-500 uppercase tracking-wider">Design title</label>
+                      <input
+                        value={title}
+                        onChange={(e) => {
+                          setTitle(e.target.value);
+                          setSaved(false);
+                        }}
+                        placeholder="Design title…"
+                        className="w-full rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2.5 text-base text-white placeholder-zinc-600 outline-none focus:border-red-500/50 sm:py-2 sm:text-sm"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={saving}
+                        className={`flex min-h-12 touch-manipulation items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-red-500 disabled:opacity-60 active:opacity-90 ${!isAuthenticated ? "opacity-80" : ""}`}
+                      >
+                        {saving ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : saved ? (
+                          <Check className="h-4 w-4" />
+                        ) : !isAuthenticated ? (
+                          <Lock className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                        ) : (
+                          <Save className="h-4 w-4" />
+                        )}
+                        {saving ? "Saving…" : saved ? "Saved!" : "Save Design"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleWhatsApp}
+                        className={`flex min-h-12 touch-manipulation items-center justify-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 px-3 py-3 text-sm font-bold text-[#25D366] transition-colors hover:bg-[#25D366]/20 active:opacity-90 sm:px-4 ${!isAuthenticated ? "opacity-80" : ""}`}
+                      >
+                        {!isAuthenticated ? (
+                          <Lock className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                        ) : (
+                          <MessageCircle className="h-4 w-4 shrink-0" />
+                        )}
+                        <span className="sm:hidden">WhatsApp inquiry</span>
+                        <span className="hidden text-center leading-snug sm:inline">Send to WhatsApp for Inquiry</span>
+                      </button>
+                    </div>
+                    <p className="px-1 text-center text-[10px] leading-snug text-zinc-500">
+                      {!isAuthenticated ? (
+                        <>
+                          <Lock className="mx-auto mb-1 inline h-3 w-3 text-zinc-500" aria-hidden />
+                          Log in or sign up to <strong className="text-zinc-400">save</strong> your design or{" "}
+                          <strong className="text-zinc-400">send a WhatsApp inquiry</strong>.
+                        </>
+                      ) : (
+                        <>
+                          WhatsApp opens with your per-side details — tap <strong className="text-zinc-400">Send</strong>{" "}
+                          to submit.
+                        </>
+                      )}
+                    </p>
+                    {saved && savedId && (
+                      <div className="rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-2 text-xs text-green-400">
+                        ✓ Design saved · ID: <span className="font-mono">{savedId.slice(-8)}</span>
+                        {" · "}
+                        <Link href="/customize/my-designs" className="underline hover:text-green-300">
+                          View My Designs
+                        </Link>
+                      </div>
                     )}
                   </div>
-
-                  <div className="mt-4">
-                    <input value={title} onChange={e => setTitle(e.target.value)}
-                      placeholder="Design title…"
-                      className="w-full rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-red-500/50" />
-                  </div>
-                  <div className="mt-3 grid grid-cols-2 gap-3">
-                    <button onClick={handleSave} disabled={saving}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white hover:bg-red-500 disabled:opacity-60 transition-colors">
-                      {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-                      {saving ? "Saving…" : saved ? "Saved!" : "Save Design"}
-                    </button>
-                    <button onClick={handleWhatsApp}
-                      className="flex items-center justify-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/20 transition-colors">
-                      <MessageCircle className="h-4 w-4" />WhatsApp
-                    </button>
-                  </div>
-                  <p className="mt-2 text-center text-[10px] text-zinc-500">
-                    WhatsApp opens with your full design details — tap <strong className="text-zinc-400">Send</strong> to submit.
-                  </p>
-                  {saved && savedId && (
-                    <div className="mt-3 rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-2 text-xs text-green-400">
-                      ✓ Design saved · ID: <span className="font-mono">{savedId.slice(-8)}</span>
-                      {" · "}
-                      <Link href="/customize/my-designs" className="underline hover:text-green-300">View My Designs</Link>
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              {/* ── Editor Controls ── */}
-              <div className="space-y-3">
+                <div className="space-y-3">
+                  <Section title={`Side: ${SIDE_LABELS[activeSide]}`} icon={Palette}>
+                    <p className="text-[10px] text-zinc-500">
+                      Changes apply only to <strong className="text-zinc-400">{SIDE_LABELS[activeSide]}</strong>. Switch tabs for other views.
+                    </p>
+                    <ColorRow
+                      label="Primary"
+                      value={currentConfig.primaryColor}
+                      onChange={(v) => patchActiveSide({ primaryColor: v })}
+                    />
+                    <ColorRow
+                      label="Secondary"
+                      value={currentConfig.secondaryColor}
+                      onChange={(v) => patchActiveSide({ secondaryColor: v })}
+                    />
+                    <ColorRow
+                      label="Accent"
+                      value={currentConfig.accentColor}
+                      onChange={(v) => patchActiveSide({ accentColor: v })}
+                    />
+                  </Section>
 
-                {/* 1 — Garment */}
-                <Section title="Garment Template" icon={Shirt}>
-                  <div className="grid grid-cols-3 gap-2">
-                    {TEMPLATES.map(t => (
-                      <button key={t.id} onClick={() => update("productTemplate", t.id)}
-                        className={`rounded-lg border px-2 py-2.5 text-left transition-all ${
-                          config.productTemplate === t.id
-                            ? "border-red-500/50 bg-red-500/10 text-red-300"
-                            : "border-white/[0.07] text-zinc-400 hover:border-white/20 hover:text-white"
-                        }`}>
-                        <p className="text-base leading-none mb-1">{t.icon}</p>
-                        <p className="text-xs font-bold">{t.label}</p>
-                        <p className="mt-0.5 text-[10px] leading-tight text-zinc-600">{t.desc}</p>
+                  <Section title="Stripes" icon={Zap}>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-xs font-medium text-zinc-300">Enable stripes</span>
+                      <button
+                        type="button"
+                        onClick={() => patchStripes({ enabled: !stripes.enabled })}
+                        className={`relative h-7 w-[2.75rem] shrink-0 touch-manipulation rounded-full transition-colors active:opacity-90 ${stripes.enabled ? "bg-red-600" : "bg-zinc-700"}`}
+                      >
+                        <span
+                          className={`absolute left-0.5 top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                            stripes.enabled ? "translate-x-[1.35rem]" : "translate-x-0"
+                          }`}
+                        />
                       </button>
-                    ))}
-                  </div>
-                </Section>
-
-                {/* 2 — Base Colors */}
-                <Section title="Base Colors" icon={Palette}>
-                  <ColorRow label="Primary (body)"   value={config.primaryColor}   onChange={v => update("primaryColor", v)} />
-                  <ColorRow label="Secondary"        value={config.secondaryColor} onChange={v => update("secondaryColor", v)} />
-                  <ColorRow label="Sleeve"           value={config.sleeveColor}    onChange={v => update("sleeveColor", v)} />
-                  <ColorRow label="Collar / Waist"   value={config.collarColor}    onChange={v => update("collarColor", v)} />
-                  <ColorRow label="Accent / Outline" value={config.accentColor}    onChange={v => update("accentColor", v)} />
-                </Section>
-
-                {/* 3 — Panels */}
-                <Section title="Panel Colors" icon={Grid3X3} defaultOpen={false}>
-                  <p className="text-[10px] text-zinc-500 -mt-1">Independent color per zone. Most visible with &quot;Panel&quot; pattern.</p>
-                  <ColorRow label="Chest Panel"  value={panels.chestPanel  ?? "#FFFFFF"} onChange={v => updatePanel("chestPanel", v)} />
-                  <ColorRow label="Side Panel"   value={panels.sidePanel   ?? "#FFFFFF"} onChange={v => updatePanel("sidePanel", v)} />
-                  <ColorRow label="Sleeve Panel" value={panels.sleevePanel ?? "#FFFFFF"} onChange={v => updatePanel("sleevePanel", v)} />
-                  <ColorRow label="Cuff"         value={panels.cuffColor   ?? "#1a1a1a"} onChange={v => updatePanel("cuffColor", v)} />
-                  <ColorRow label="Collar / Hood" value={panels.collarColor ?? "#1a1a1a"} onChange={v => updatePanel("collarColor", v)} />
-                </Section>
-
-                {/* 4 — Pattern */}
-                <Section title="Fabric Pattern" icon={Layers}>
-                  <div className="grid grid-cols-5 gap-1.5">
-                    {PATTERNS.map(p => (
-                      <button key={p.id} onClick={() => update("fabricPattern", p.id)}
-                        className={`rounded-lg border py-2 flex flex-col items-center gap-0.5 transition-all ${
-                          config.fabricPattern === p.id
-                            ? "border-red-500/50 bg-red-500/10 text-red-300"
-                            : "border-white/[0.07] text-zinc-400 hover:border-white/20 hover:text-white"
-                        }`}>
-                        <span className="text-base leading-none">{p.preview}</span>
-                        <span className="text-[9px] font-medium">{p.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </Section>
-
-                {/* 5 — Stripes */}
-                <Section title="Stripe System" icon={Zap}>
-                  {/* Enable toggle */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-300 font-medium">Enable Stripes</span>
-                    <button onClick={() => updateStripe("enabled", !stripes.enabled)}
-                      className={`relative h-6 w-11 rounded-full transition-colors ${stripes.enabled ? "bg-red-600" : "bg-zinc-700"}`}>
-                      <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${stripes.enabled ? "translate-x-5" : "translate-x-0.5"}`} />
-                    </button>
-                  </div>
-
-                  {stripes.enabled && (
-                    <div className="space-y-4 pt-1">
-                      {/* Position */}
-                      <div>
-                        <p className="mb-1.5 text-[10px] text-zinc-500 uppercase tracking-wider">Position</p>
-                        <ToggleGroup
-                          options={STRIPE_POSITIONS}
-                          value={stripes.position}
-                          onChange={v => updateStripe("position", v)}
+                    </div>
+                    {stripes.enabled && (
+                      <div className="space-y-4 pt-1">
+                        <div>
+                          <p className="mb-1.5 text-[10px] uppercase tracking-wider text-zinc-500">Position</p>
+                          <ToggleGroup
+                            options={STRIPE_POSITIONS}
+                            value={stripes.position}
+                            onChange={(v) => patchStripes({ position: v })}
+                          />
+                        </div>
+                        <div>
+                          <p className="mb-1.5 text-[10px] uppercase tracking-wider text-zinc-500">Thickness</p>
+                          <ToggleGroup
+                            options={STRIPE_THICKNESS}
+                            value={stripes.thickness}
+                            onChange={(v) => patchStripes({ thickness: v })}
+                          />
+                        </div>
+                        <ColorRow
+                          label="Stripe color"
+                          value={stripes.color}
+                          onChange={(v) => patchStripes({ color: v })}
                         />
                       </div>
+                    )}
+                  </Section>
 
-                      {/* Count */}
-                      <div className="flex items-center justify-between">
-                        <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Stripe Count</p>
-                        <CountStepper
-                          value={stripes.count}
-                          onChange={v => updateStripe("count", v as StripeCount)}
+                  <Section title="Logo upload" icon={Upload} defaultOpen={false}>
+                    <label className="flex min-h-12 cursor-pointer touch-manipulation items-center gap-3 rounded-lg border border-dashed border-white/[0.15] bg-white/[0.02] px-3 py-3 transition-colors hover:border-red-500/30 sm:px-4">
+                      {uploading ? (
+                        <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+                      ) : (
+                        <Upload className="h-4 w-4 text-zinc-400" />
+                      )}
+                      <span className="text-xs text-zinc-400">
+                        {currentConfig.logoUrl
+                          ? "Logo on this side — click to replace"
+                          : "PNG / JPG / WebP (login required)"}
+                      </span>
+                      <input
+                        ref={fileRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleLogoUpload}
+                      />
+                    </label>
+                    {currentConfig.logoUrl && (
+                      <div className="flex items-center gap-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={currentConfig.logoUrl}
+                          alt=""
+                          className="h-10 w-10 rounded border border-white/10 bg-zinc-800 object-contain"
                         />
-                      </div>
-
-                      {/* Thickness */}
-                      <div>
-                        <p className="mb-1.5 text-[10px] text-zinc-500 uppercase tracking-wider">Thickness</p>
-                        <ToggleGroup
-                          options={[
-                            { id: "thin" as StripeThickness,   label: "Thin" },
-                            { id: "medium" as StripeThickness, label: "Medium" },
-                            { id: "thick" as StripeThickness,  label: "Thick" },
-                          ]}
-                          value={stripes.thickness}
-                          onChange={v => updateStripe("thickness", v)}
-                        />
-                      </div>
-
-                      {/* Both sides */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-zinc-400">Both Sides</span>
-                        <button onClick={() => updateStripe("bothSides", !stripes.bothSides)}
-                          className={`relative h-5 w-9 rounded-full transition-colors ${stripes.bothSides !== false ? "bg-red-600" : "bg-zinc-700"}`}>
-                          <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${stripes.bothSides !== false ? "translate-x-4" : "translate-x-0.5"}`} />
+                        <button
+                          type="button"
+                          onClick={() => patchActiveSide({ logoUrl: undefined })}
+                          className="text-[10px] text-red-400 hover:text-red-300"
+                        >
+                          Remove logo
                         </button>
                       </div>
+                    )}
+                  </Section>
 
-                      {/* Stripe colors */}
-                      <div className="space-y-3">
-                        <ColorRow label="Stripe 1 Color" value={stripes.color} onChange={v => updateStripe("color", v)} />
-                        {stripes.count >= 2 && (
-                          <ColorRow label="Stripe 2 Color" value={stripes.color2 ?? "#FFFFFF"} onChange={v => updateStripe("color2", v)} />
-                        )}
-                        {stripes.count >= 3 && (
-                          <ColorRow label="Stripe 3 Color" value={stripes.color3 ?? "#FFFFFF"} onChange={v => updateStripe("color3", v)} />
-                        )}
-                      </div>
+                  <Section title="Name & number" icon={Type} defaultOpen={false}>
+                    <div>
+                      <label className="mb-1 block text-[10px] uppercase tracking-wider text-zinc-500">Name</label>
+                      <input
+                        value={currentConfig.customText}
+                        onChange={(e) => patchActiveSide({ customText: e.target.value })}
+                        maxLength={14}
+                        placeholder="e.g. JOHNSON"
+                        className="w-full rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2.5 text-base uppercase text-white placeholder-zinc-600 outline-none focus:border-red-500/50 sm:py-2 sm:text-sm"
+                      />
                     </div>
-                  )}
-                </Section>
+                    <div>
+                      <label className="mb-1 block text-[10px] uppercase tracking-wider text-zinc-500">Number</label>
+                      <input
+                        value={currentConfig.customNumber}
+                        onChange={(e) =>
+                          patchActiveSide({
+                            customNumber: e.target.value.replace(/\D/g, "").slice(0, 2),
+                          })
+                        }
+                        maxLength={2}
+                        placeholder="e.g. 10"
+                        className="w-full rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2.5 text-base text-white placeholder-zinc-600 outline-none focus:border-red-500/50 sm:py-2 sm:text-sm"
+                      />
+                    </div>
+                  </Section>
 
-                {/* 6 — Logo */}
-                <Section title="Logo Upload" icon={Upload} defaultOpen={false}>
-                  <div>
-                    <p className="mb-1.5 text-[10px] text-zinc-500 uppercase tracking-wider">Logo Position</p>
-                    <ToggleGroup
-                      options={LOGO_POSITIONS}
-                      value={config.logoPosition}
-                      onChange={v => update("logoPosition", v)}
+                  <Section title="Notes" icon={Type} defaultOpen={false}>
+                    <textarea
+                      value={currentConfig.notes}
+                      onChange={(e) => patchActiveSide({ notes: e.target.value })}
+                      rows={4}
+                      maxLength={2000}
+                      placeholder="Special instructions for this side…"
+                      className="w-full resize-none rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2.5 text-base text-white placeholder-zinc-600 outline-none focus:border-red-500/50 sm:py-2 sm:text-sm"
                     />
-                  </div>
-                  <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-white/[0.15] bg-white/[0.02] px-4 py-3 hover:border-red-500/30 transition-colors">
-                    {uploading
-                      ? <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
-                      : <Upload className="h-4 w-4 text-zinc-400" />}
-                    <span className="text-xs text-zinc-400">
-                      {config.logoUrl ? "Logo uploaded ✓ — click to replace" : "Click to upload PNG/JPG (max 5 MB)"}
-                    </span>
-                    <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
-                  </label>
-                  {config.logoUrl && (
-                    <div className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={config.logoUrl} alt="logo" className="h-10 w-10 rounded object-contain border border-white/10 bg-zinc-800" />
-                      <button onClick={() => update("logoUrl", undefined)} className="text-[10px] text-red-400 hover:text-red-300">
-                        Remove logo
-                      </button>
-                    </div>
-                  )}
-                </Section>
-
-                {/* 7 — Text & Number */}
-                <Section title="Name & Number" icon={Type} defaultOpen={false}>
-                  <div>
-                    <label className="mb-1 block text-[10px] text-zinc-500 uppercase tracking-wider">Player / Team Name</label>
-                    <input value={config.customText ?? ""} onChange={e => update("customText", e.target.value)}
-                      maxLength={14} placeholder="e.g. JOHNSON"
-                      className="w-full rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2 text-sm uppercase text-white placeholder-zinc-600 outline-none focus:border-red-500/50" />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-[10px] text-zinc-500 uppercase tracking-wider">Player Number (max 2 digits)</label>
-                    <input value={config.customNumber ?? ""}
-                      onChange={e => update("customNumber", e.target.value.replace(/\D/g, "").slice(0, 2))}
-                      maxLength={2} placeholder="e.g. 10"
-                      className="w-full rounded-lg border border-white/[0.1] bg-black/40 px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-red-500/50" />
-                  </div>
-                </Section>
-
+                  </Section>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
       </main>

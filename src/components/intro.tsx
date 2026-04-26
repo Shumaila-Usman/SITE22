@@ -22,7 +22,7 @@ const CLOTH_IMAGES = [
 // 7 pieces — each flies in from a different edge, then settles into a clean row.
 // arrangeX is evenly spaced: -54vw, -36vw, -18vw, 0vw, 18vw, 36vw, 54vw
 // All upright (arrangeR ≈ 0), large size, bottom-anchored so they look displayed.
-const PIECES = [
+const DESKTOP_PIECES = [
   { startX: "-70vw", startY: "-50vh", entryR: -45, arrangeX: "-54vw", arrangeY:  "8vh", arrangeR:  -4, delay: 0.00 },
   { startX:  "70vw", startY: "-50vh", entryR:  40, arrangeX: "-36vw", arrangeY:  "8vh", arrangeR:   3, delay: 0.06 },
   { startX: "-70vw", startY:  "50vh", entryR:  30, arrangeX: "-18vw", arrangeY:  "8vh", arrangeR:  -2, delay: 0.03 },
@@ -32,10 +32,42 @@ const PIECES = [
   { startX:  "70vw", startY:   "0vh", entryR: -25, arrangeX:  "54vw", arrangeY:  "8vh", arrangeR:   4, delay: 0.02 },
 ];
 
-// Arranged size — big and prominent
-const ARRANGED_SIZE = 280;
-// Flying size
-const FLYING_SIZE   = 160;
+// Mobile fly-in (unchanged); final positions are computed from viewport so garments can be large without clipping.
+const MOBILE_FLY_IN = [
+  { startX: "-80vw", startY: "-50vh", entryR: -45, delay: 0.0 },
+  { startX: "80vw", startY: "-48vh", entryR: 40, delay: 0.06 },
+  { startX: "-78vw", startY: "52vh", entryR: 30, delay: 0.03 },
+  { startX: "0vw", startY: "-72vh", entryR: 10, delay: 0.09 },
+  { startX: "78vw", startY: "52vh", entryR: -35, delay: 0.04 },
+  { startX: "-52vw", startY: "72vh", entryR: 20, delay: 0.07 },
+  { startX: "80vw", startY: "2vh", entryR: -25, delay: 0.02 },
+] as const;
+
+function buildMobilePieces(w: number) {
+  const width = Math.max(280, Math.min(w, 520));
+  /** Scale with viewport; slightly larger tiles, tight gap so 4+3 still fits */
+  const arrangedSize = Math.round(Math.min(104, Math.max(76, width * 0.236)));
+  const pieceVw = (arrangedSize / width) * 100;
+  const gapVw = pieceVw * 1.04;
+  const row1x = (i: number) => `${((i - 1.5) * gapVw).toFixed(1)}vw`;
+  const row2x = (i: number) => `${((i - 1) * gapVw).toFixed(1)}vw`;
+  const flyingSize = Math.round(Math.min(150, arrangedSize * 1.46));
+
+  const arrangeR = [-2, 2, -1, 0, 2, -1, 1] as const;
+  return {
+    arrangedSize,
+    flyingSize,
+    pieces: MOBILE_FLY_IN.map((p, i) => ({
+      startX: p.startX,
+      startY: p.startY,
+      entryR: p.entryR,
+      delay: p.delay,
+      arrangeR: arrangeR[i] ?? 0,
+      arrangeY: i < 4 ? "-4vh" : "8vh",
+      arrangeX: i < 4 ? row1x(i) : row2x(i - 4),
+    })),
+  };
+}
 
 // ─── Shockwave ────────────────────────────────────────────────────────────────
 function Shockwave({ trigger }: { trigger: boolean }) {
@@ -71,6 +103,8 @@ interface PieceProps {
   startX: string; startY: string; entryR: number;
   arrangeX: string; arrangeY: string; arrangeR: number;
   delay: number;
+  flyingSize: number;
+  arrangedSize: number;
   phase: "hidden" | "flying" | "arranged" | "fadeout";
   index: number;
 }
@@ -78,7 +112,7 @@ interface PieceProps {
 function ClothPiece({
   src, startX, startY, entryR,
   arrangeX, arrangeY, arrangeR,
-  delay, phase, index,
+  delay, phase, index, flyingSize, arrangedSize,
 }: PieceProps) {
   const isFlying   = phase === "flying";
   const isArranged = phase === "arranged";
@@ -88,7 +122,7 @@ function ClothPiece({
   const floatY   = 6 + (index % 3) * 2;
   const floatDur = 2.8 + (index % 4) * 0.4;
 
-  const size = isArranged || isFadeout ? ARRANGED_SIZE : FLYING_SIZE;
+  const size = isArranged || isFadeout ? arrangedSize : flyingSize;
 
   return (
     <motion.div
@@ -170,6 +204,24 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState<
     "black" | "fly" | "collide" | "arrange" | "brand" | "fadeout" | "done"
   >("black");
+  const [isMobile, setIsMobile] = useState(false);
+  const [viewportW, setViewportW] = useState(390);
+
+  useEffect(() => {
+    const update = () => {
+      const vw = window.innerWidth;
+      setViewportW(vw);
+      setIsMobile(vw < 768);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const mobileLayout = buildMobilePieces(viewportW);
+  const pieces = isMobile ? mobileLayout.pieces : DESKTOP_PIECES;
+  const arrangedSize = isMobile ? mobileLayout.arrangedSize : 280;
+  const flyingSize = isMobile ? mobileLayout.flyingSize : 160;
 
   useEffect(() => {
     const timers = [
@@ -213,13 +265,15 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
           />
 
           {/* ── Cloth pieces ── */}
-          {PIECES.map((p, i) => (
+          {pieces.map((p, i) => (
             <ClothPiece
               key={i}
               src={CLOTH_IMAGES[i]}
               startX={p.startX}     startY={p.startY}     entryR={p.entryR}
               arrangeX={p.arrangeX} arrangeY={p.arrangeY} arrangeR={p.arrangeR}
               delay={p.delay}
+              flyingSize={flyingSize}
+              arrangedSize={arrangedSize}
               phase={piecePhase}
               index={i}
             />
@@ -241,7 +295,7 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
               >
                 {/* Dark pill behind text so it reads over clothes */}
                 <motion.div
-                  className="flex flex-col items-center gap-3 rounded-2xl px-10 py-8"
+                  className="flex flex-col items-center gap-2 rounded-xl px-5 py-5 sm:gap-3 sm:rounded-2xl sm:px-10 sm:py-8"
                   style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(12px)" }}
                   initial={{ scale: 0.92, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -256,7 +310,7 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
                         initial={{ y: "110%", opacity: 0 }}
                         animate={{ y: "0%", opacity: 1 }}
                         transition={{ duration: 0.55, ease: SMOOTH, delay: i * 0.05 }}
-                        className="text-[clamp(2rem,5vw,3.8rem)] font-black uppercase tracking-[0.18em] text-white"
+                        className="text-[clamp(1.25rem,7vw,3.8rem)] font-black uppercase tracking-[0.14em] text-white sm:tracking-[0.18em]"
                       >
                         {char}
                       </motion.span>
@@ -267,7 +321,7 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: SMOOTH, delay: 0.5 }}
-                    className="text-[11px] uppercase tracking-[0.3em] text-zinc-400"
+                    className="text-[9px] uppercase tracking-[0.18em] text-zinc-400 sm:text-[11px] sm:tracking-[0.3em]"
                   >
                     Sportswear Manufacturer &amp; Exporter
                   </motion.span>

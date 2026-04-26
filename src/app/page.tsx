@@ -30,13 +30,12 @@ export default function HomePage() {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // Only show intro on desktop (≥1024px)
     const desktop = window.innerWidth >= 1024;
     setIsDesktop(desktop);
-    if (desktop) {
+    // Show intro on all devices once per session.
+    if (!sessionStorage.getItem("mci_intro_done")) {
       setShowIntro(true);
     } else {
-      // Mobile — skip intro, show site immediately
       setReady(true);
     }
   }, []);
@@ -49,7 +48,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Intro — desktop only */}
+      {/* Intro — all devices (once per session) */}
       <AnimatePresence>
         {showIntro && <Intro onComplete={handleIntroComplete} />}
       </AnimatePresence>

@@ -9,17 +9,19 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useAuthStore, useWishlistStore } from "@/lib/store";
 import { AuthModal } from "@/components/auth-modal";
+import { LanguageSelector } from "@/components/language-selector";
+import { useLanguage } from "@/context/language-context";
 
 const NAV_LINKS = [
-  { href: "/",              label: "Home" },
-  { href: "/about",         label: "About" },
-  { href: "/products",      label: "Products" },
-  { href: "/customize",     label: "Customize" },
-  { href: "/upload-design", label: "Upload Design" },
-  { href: "/capabilities",  label: "Custom Mfg" },
-  { href: "/process",       label: "MOQ & Process" },
-  { href: "/contact",       label: "Contact" },
-];
+  { href: "/",              labelKey: "navbar.home" },
+  { href: "/about",         labelKey: "navbar.about" },
+  { href: "/products",      labelKey: "navbar.products" },
+  { href: "/customize",     labelKey: "navbar.customize" },
+  { href: "/upload-design", labelKey: "navbar.uploadDesign" },
+  { href: "/capabilities",  labelKey: "navbar.customMfg" },
+  { href: "/process",       labelKey: "navbar.moqProcess" },
+  { href: "/contact",       labelKey: "navbar.contact" },
+] as const;
 
 // Animated gradient — slow horizontal drift, premium feel
 function AnimatedGradient() {
@@ -76,6 +78,7 @@ function AnimatedGradient() {
 }
 
 export function SiteHeader() {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -195,7 +198,7 @@ export function SiteHeader() {
                     : "text-zinc-400 hover:text-white",
                 )}
               >
-                {link.label}
+                {t(link.labelKey)}
                 {/* Active underline */}
                 {pathname === link.href && (
                   <motion.span
@@ -209,6 +212,7 @@ export function SiteHeader() {
 
           {/* CTA + mobile toggle */}
           <div className="flex items-center gap-2">
+            <LanguageSelector />
             {isAuthenticated ? (
               <>
                 {/* Wishlist icon */}
@@ -248,13 +252,13 @@ export function SiteHeader() {
                           <p className="text-[10px] text-zinc-500 truncate">{user?.email}</p>
                         </div>
                         <Link href="/wishlist" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-3 text-xs text-zinc-300 transition-colors hover:bg-white/[0.04] hover:text-white">
-                          <Heart className="h-3.5 w-3.5" /> My Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+                          <Heart className="h-3.5 w-3.5" /> {t("header.myWishlist")}{wishlistCount > 0 && ` (${wishlistCount})`}
                         </Link>
                         <button
                           onClick={() => { logout(); setUserMenuOpen(false); }}
                           className="flex w-full items-center gap-2.5 px-4 py-3 text-xs text-zinc-400 transition-colors hover:bg-white/[0.04] hover:text-red-400"
                         >
-                          <LogOut className="h-3.5 w-3.5" /> Sign Out
+                          <LogOut className="h-3.5 w-3.5" /> {t("header.signOut")}
                         </button>
                       </motion.div>
                     )}
@@ -268,20 +272,20 @@ export function SiteHeader() {
                   onClick={() => { setAuthTab("login"); setAuthOpen(true); }}
                   className="hidden text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400 transition-colors hover:text-white md:block"
                 >
-                  Sign In
+                  {t("header.signIn")}
                 </button>
                 <button
                   suppressHydrationWarning
                   onClick={() => { setAuthTab("register"); setAuthOpen(true); }}
                   className="hidden items-center gap-2 rounded-full border border-red-500/70 bg-red-600 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white shadow-[0_0_20px_rgba(239,68,68,0.25)] transition-all duration-300 hover:bg-red-500 hover:shadow-[0_0_28px_rgba(239,68,68,0.4)] md:flex"
                 >
-                  Sign Up
+                  {t("header.signUp")}
                 </button>
               </>
             )}
 
             <button
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? t("header.closeMenu") : t("header.openMenu")}
               onClick={() => setOpen((v) => !v)}
               suppressHydrationWarning
               className="flex h-9 w-9 items-center justify-center rounded-md border border-white/10 text-zinc-300 transition-colors hover:border-white/20 hover:text-white md:hidden mr-6"
@@ -323,7 +327,7 @@ export function SiteHeader() {
                         : "text-zinc-300 hover:bg-white/[0.04] hover:text-white",
                     )}
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </motion.div>
               ))}
@@ -332,19 +336,19 @@ export function SiteHeader() {
               {isAuthenticated ? (
                 <>
                   <Link href="/wishlist" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-lg border border-white/[0.08] px-4 py-3 text-sm font-medium text-zinc-300">
-                    <Heart className="h-4 w-4" /> Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+                    <Heart className="h-4 w-4" /> {t("header.wishlist")}{wishlistCount > 0 && ` (${wishlistCount})`}
                   </Link>
                   <button onClick={() => { logout(); setOpen(false); }} className="flex w-full items-center gap-2 rounded-lg border border-white/[0.08] px-4 py-3 text-sm font-medium text-red-400">
-                    <LogOut className="h-4 w-4" /> Sign Out
+                    <LogOut className="h-4 w-4" /> {t("header.signOut")}
                   </button>
                 </>
               ) : (
                 <>
                   <button onClick={() => { setAuthTab("login"); setAuthOpen(true); setOpen(false); }} className="flex w-full items-center justify-center rounded-full border border-white/20 py-3 text-sm font-bold uppercase tracking-widest text-zinc-300">
-                    Sign In
+                    {t("header.signIn")}
                   </button>
                   <button onClick={() => { setAuthTab("register"); setAuthOpen(true); setOpen(false); }} className="flex w-full items-center justify-center rounded-full bg-red-600 py-3 text-sm font-bold uppercase tracking-widest text-white">
-                    Sign Up
+                    {t("header.signUp")}
                   </button>
                 </>
               )}

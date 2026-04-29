@@ -4,53 +4,60 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Instagram, Facebook, Linkedin } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/products", label: "Products" },
-  { href: "/capabilities", label: "Custom Manufacturing" },
-  { href: "/process", label: "MOQ & Process" },
-  { href: "/wishlist", label: "Wishlist" },
-  { href: "/contact", label: "Contact" },
-];
-
-const CARDS = [
-  {
-    label: "Contact Us",
-    items: [
-      { icon: Phone,  text: "0337 7270001",                              href: "tel:+923377270001" },
-      { icon: Mail,   text: "megacoreintl@gmail.com",                    href: "mailto:megacoreintl@gmail.com" },
-      { icon: Mail,   text: "info@megacoreintl.com",                     href: "mailto:info@megacoreintl.com" },
-    ],
-  },
-  {
-    label: "Manufacturing",
-    sublabel: "Facility",
-    items: [
-      { icon: MapPin, text: "Rangers Road, Sialkot\nPakistan — 51300",   href: "https://maps.google.com/?q=Rangers+Road+Sialkot+Pakistan+51300" },
-    ],
-    hours: [
-      { day: "Mon – Fri", time: "9:00 AM – 6:00 PM" },
-      { day: "Saturday", time: "9:00 AM – 2:00 PM" },
-      { day: "Sunday", time: "Closed" },
-    ],
-  },
-  {
-    label: "Export",
-    sublabel: "Inquiries",
-    items: [
-      { icon: MapPin, text: "Global Shipping\nAll Major Markets", href: "mailto:megacoreintl@gmail.com" },
-    ],
-    hours: [
-      { day: "Response Time", time: "Within 24 hrs" },
-      { day: "MOQ", time: "50 Pieces" },
-      { day: "Payment", time: "Advance Basis" },
-    ],
-  },
-];
+  { href: "/", labelKey: "footer.home" },
+  { href: "/about", labelKey: "footer.aboutUs" },
+  { href: "/products", labelKey: "footer.products" },
+  { href: "/capabilities", labelKey: "footer.customManufacturing" },
+  { href: "/process", labelKey: "footer.moqProcess" },
+  { href: "/wishlist", labelKey: "footer.wishlist" },
+  { href: "/contact", labelKey: "footer.contact" },
+] as const;
 
 export function SiteFooter() {
+  const { t } = useLanguage();
+
+  const CARDS = [
+    {
+      labelKey: "footer.cardContact" as const,
+      items: [
+        { icon: Phone,  text: "0337 7270001",                              href: "tel:+923377270001" },
+        { icon: Mail,   text: "megacoreintl@gmail.com",                    href: "mailto:megacoreintl@gmail.com" },
+        { icon: Mail,   text: "info@megacoreintl.com",                     href: "mailto:info@megacoreintl.com" },
+      ],
+    },
+    {
+      labelKey: "footer.cardManufacturing" as const,
+      sublabelKey: "footer.cardFacility" as const,
+      items: [
+        { icon: MapPin, text: "Rangers Road, Sialkot\nPakistan — 51300",   href: "https://maps.google.com/?q=Rangers+Road+Sialkot+Pakistan+51300" },
+      ],
+      hours: [
+        { dayKey: "footer.hoursMonFri" as const, timeKey: "footer.hoursTimeMF" as const },
+        { dayKey: "footer.hoursSat" as const, timeKey: "footer.hoursTimeSat" as const },
+        { dayKey: "footer.hoursSun" as const, timeKey: "footer.hoursClosed" as const },
+      ],
+    },
+    {
+      labelKey: "footer.cardExport" as const,
+      sublabelKey: "footer.cardInquiries" as const,
+      items: [
+        {
+          icon: MapPin,
+          text: `${t("footer.exportGlobalShipping")}\n${t("footer.exportAllMarkets")}`,
+          href: "mailto:megacoreintl@gmail.com",
+        },
+      ],
+      hours: [
+        { dayKey: "footer.exportResponse" as const, timeKey: "footer.exportWithin24" as const },
+        { dayKey: "footer.exportMoq" as const, timeKey: "footer.exportMoqPieces" as const },
+        { dayKey: "footer.exportPayment" as const, timeKey: "footer.exportAdvance" as const },
+      ],
+    },
+  ];
+
   return (
     <footer className="relative overflow-hidden bg-[#1a0505]">
       {/* ── Animated background — same as scrolled header ── */}
@@ -117,9 +124,9 @@ export function SiteFooter() {
           }}
         >
           <span className="inline-flex items-center gap-6 px-8 text-lg font-light tracking-[0.08em] text-zinc-300 md:text-xl">
-            Your trusted partner for{" "}
+            {t("footer.taglinePrefix")}{" "}
             <span className="font-semibold text-white">
-              premium sportswear manufacturing
+              {t("footer.taglineHighlight")}
             </span>
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-red-500/70" />
           </span>
@@ -136,13 +143,13 @@ export function SiteFooter() {
               {/* Card label */}
               <div className="mb-5 flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-red-400">
-                  {card.label}
+                  {t(card.labelKey)}
                 </span>
-                {card.sublabel && (
+                {"sublabelKey" in card && card.sublabelKey && (
                   <>
                     <span className="h-px w-3 bg-white/20" />
                     <span className="text-[10px] uppercase tracking-[0.25em] text-zinc-500">
-                      {card.sublabel}
+                      {t(card.sublabelKey)}
                     </span>
                   </>
                 )}
@@ -181,9 +188,9 @@ export function SiteFooter() {
                 <div className="mt-4 space-y-1.5 border-t border-white/[0.06] pt-4">
                   {card.hours.map((h, hi) => (
                     <div key={hi} className="flex items-center justify-between">
-                      <span className="text-[11px] text-zinc-500">{h.day}</span>
+                      <span className="text-[11px] text-zinc-500">{t(h.dayKey)}</span>
                       <span className="text-[11px] font-medium text-zinc-300">
-                        {h.time}
+                        {t(h.timeKey)}
                       </span>
                     </div>
                   ))}
@@ -222,7 +229,7 @@ export function SiteFooter() {
               href={link.href}
               className="text-[11px] uppercase tracking-[0.18em] text-zinc-300 transition-colors duration-200 hover:text-white"
             >
-              {link.label}
+              {t(link.labelKey)}
             </Link>
           ))}
         </nav>
@@ -246,7 +253,7 @@ export function SiteFooter() {
 
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 sm:px-6 sm:py-5 md:flex-row">
           <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-300">
-            © {new Date().getFullYear()} Megacore International. All rights reserved.
+            {t("footer.copyright", { year: String(new Date().getFullYear()) })}
           </p>
           {/* Logo — centered */}
           <Link href="/">
@@ -259,7 +266,7 @@ export function SiteFooter() {
             />
           </Link>
           <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-300">
-            Sportswear Manufacturer &amp; Exporter — Pakistan
+            {t("footer.taglineBottom")}
           </p>
         </div>
       </div>

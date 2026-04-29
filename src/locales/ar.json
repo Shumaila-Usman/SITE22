@@ -1,0 +1,1218 @@
+{
+  "navbar": {
+    "home": "الرئيسية",
+    "about": "من نحن",
+    "products": "المنتجات",
+    "customize": "تخصيص",
+    "uploadDesign": "رفع التصميم",
+    "customMfg": "تصنيع مخصص",
+    "moqProcess": "الحد الأدنى والإجراءات",
+    "contact": "اتصل بنا"
+  },
+  "footer": {
+    "home": "الرئيسية",
+    "aboutUs": "من نحن",
+    "products": "المنتجات",
+    "customManufacturing": "تصنيع مخصص",
+    "moqProcess": "الحد الأدنى والإجراءات",
+    "wishlist": "المفضلة",
+    "contact": "اتصل بنا",
+    "taglinePrefix": "شريكك الموثوق لـ",
+    "taglineHighlight": "تصنيع ملابس رياضية متميزة",
+    "cardContact": "اتصل بنا",
+    "cardManufacturing": "التصنيع",
+    "cardFacility": "المنشأة",
+    "cardExport": "التصدير",
+    "cardInquiries": "الاستفسارات",
+    "hoursMonFri": "الإثنين – الجمعة",
+    "hoursSat": "السبت",
+    "hoursSun": "الأحد",
+    "hoursClosed": "مغلق",
+    "hoursTimeMF": "9:00 ص – 6:00 م",
+    "hoursTimeSat": "9:00 ص – 2:00 م",
+    "exportGlobalShipping": "شحن عالمي",
+    "exportAllMarkets": "جميع الأسواق الرئيسية",
+    "exportResponse": "زمن الاستجابة",
+    "exportWithin24": "خلال 24 ساعة",
+    "exportMoq": "الحد الأدنى",
+    "exportMoqPieces": "50 قطعة",
+    "exportPayment": "الدفع",
+    "exportAdvance": "على أساس السداد المقدم",
+    "copyright": "© {{year}} Megacore International. جميع الحقوق محفوظة.",
+    "taglineBottom": "مصدر ملابس رياضية — باكستان"
+  },
+  "header": {
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "signOut": "تسجيل الخروج",
+    "myWishlist": "قائمتي",
+    "wishlist": "المفضلة",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "language": "اللغة"
+  },
+  "language": {
+    "en": "EN",
+    "ur": "UR",
+    "ar": "AR"
+  },
+  "common": {
+    "explore": "استكشف",
+    "viewProducts": "عرض المنتجات",
+    "requestQuote": "طلب عرض سعر",
+    "learnMore": "اعرف المزيد",
+    "send": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "loading": "جارٍ التحميل…",
+    "browse": "تصفح",
+    "moqBadge": "الحد الأدنى: 50 قطعة",
+    "subcategories": "{{count}} فئات فرعية",
+    "moreCount": "+{{count}} المزيد",
+    "noSubcategories": "لا توجد فئات فرعية بعد.",
+    "products": "المنتجات",
+    "step": "الخطوة {{step}}"
+  },
+  "auth": {
+    "signInTitle": "تسجيل الدخول",
+    "createAccountTitle": "إنشاء حساب",
+    "signInSubtitle": "الوصول إلى الأسعار وقائمتك",
+    "registerSubtitle": "سجّل لعرض الأسعار وحفظ المنتجات",
+    "registerTab": "تسجيل",
+    "fullNamePh": "الاسم الكامل *",
+    "companyPh": "الشركة / العلامة",
+    "countryPh": "الدولة",
+    "emailPh": "البريد الإلكتروني *",
+    "passwordPh": "كلمة المرور *",
+    "errEmailPassword": "البريد وكلمة المرور مطلوبان.",
+    "errName": "الاسم الكامل مطلوب.",
+    "errRegister": "فشل التسجيل.",
+    "errLogin": "بريد أو كلمة مرور غير صحيحة.",
+    "pleaseWait": "يرجى الانتظار…",
+    "termsPrefix": "بالمتابعة فإنك توافق على",
+    "termsLink": "الشروط والسياسة",
+    "adminPrompt": "مسؤول؟",
+    "adminLink": "دخول المسؤول"
+  },
+  "hero": {
+    "brand": "Megacore International",
+    "scroll": "Scroll",
+    "slide": "Slide {{n}}",
+    "prev": "Previous",
+    "next": "Next",
+    "trustIso": "ISO 9001 Certified",
+    "trustMarkets": "180+ Global Markets",
+    "trustMoq": "MOQ from 50 pcs",
+    "trustVertical": "Vertically Integrated",
+    "slides": [
+      {
+        "eyebrow": "Sportswear Manufacturer & Exporter",
+        "headline0": "Built For",
+        "headline1": "Performance",
+        "accent": "Performance",
+        "sub": "Megacore International engineers high-performance apparel through vertically integrated manufacturing and logistics-ready export delivery across global markets.",
+        "cta": "Start Production",
+        "ctaSecondary": "View Products",
+        "tag": "Est. Pakistan",
+        "stat0v": "180+",
+        "stat0l": "Markets",
+        "stat1v": "12M+",
+        "stat1l": "Units / Year",
+        "stat2v": "50 pcs",
+        "stat2l": "Min. Order"
+      },
+      {
+        "eyebrow": "Product Catalog",
+        "headline0": "Premium",
+        "headline1": "Sportswear",
+        "accent": "Sportswear",
+        "sub": "Jerseys, tracksuits, gym wear, hoodies, compression sets, and accessories — manufactured to international export standards with full customization.",
+        "cta": "Explore Products",
+        "ctaSecondary": "View Catalog",
+        "tag": "150+ SKUs",
+        "stat0v": "25+",
+        "stat0l": "Categories",
+        "stat1v": "150+",
+        "stat1l": "Products",
+        "stat2v": "Custom",
+        "stat2l": "Sizing"
+      },
+      {
+        "eyebrow": "OEM & Private Label",
+        "headline0": "Custom",
+        "headline1": "Manufacturing",
+        "accent": "Manufacturing",
+        "sub": "Your brand, our production. Custom logos, private labels, unique fabrics, colorways, and packaging — built to your exact specification.",
+        "cta": "Explore OEM",
+        "ctaSecondary": "Request Quote",
+        "tag": "Full OEM",
+        "stat0v": "100%",
+        "stat0l": "Custom",
+        "stat1v": "OEM",
+        "stat1l": "Available",
+        "stat2v": "Private",
+        "stat2l": "Label"
+      },
+      {
+        "eyebrow": "MOQ & Order Process",
+        "headline0": "Simple",
+        "headline1": "Bulk Orders",
+        "accent": "Bulk Orders",
+        "sub": "Start with just 50 pieces. Send inquiry → confirm specs → advance payment → sampling → production → shipment.",
+        "cta": "View Process",
+        "ctaSecondary": "Start Order",
+        "tag": "MOQ 50 pcs",
+        "stat0v": "50 pcs",
+        "stat0l": "Min. Order",
+        "stat1v": "5–7d",
+        "stat1l": "Sampling",
+        "stat2v": "15–25d",
+        "stat2l": "Production"
+      },
+      {
+        "eyebrow": "Global Export",
+        "headline0": "Export Ready",
+        "headline1": "Worldwide",
+        "accent": "Worldwide",
+        "sub": "Serving buyers across Europe, North America, the Middle East, Africa, and Asia. ISO 9001 certified. Export documentation and professional handling.",
+        "cta": "Contact Us",
+        "ctaSecondary": "Our Process",
+        "tag": "ISO 9001",
+        "stat0v": "42+",
+        "stat0l": "Countries",
+        "stat1v": "ISO",
+        "stat1l": "9001 Cert.",
+        "stat2v": "98.4%",
+        "stat2l": "On-Time"
+      }
+    ]
+  },
+  "intro": {
+    "tagline": "مصنع ومُصدّر ملابس رياضية"
+  },
+  "sections": {
+    "statsStrip": {
+      "items": [
+        {
+          "value": "280K+",
+          "label": "Units / Month"
+        },
+        {
+          "value": "42",
+          "label": "Countries Served"
+        },
+        {
+          "value": "5 Days",
+          "label": "Avg Sample Lead Time"
+        },
+        {
+          "value": "98.4%",
+          "label": "On-Time Export Dispatch"
+        },
+        {
+          "value": "MOQ 50",
+          "label": "Minimum Order Qty"
+        },
+        {
+          "value": "ISO 9001",
+          "label": "Quality Certified"
+        }
+      ]
+    },
+    "aboutPreview": {
+      "label": "About Megacore",
+      "heading": "A Manufacturer Built For Global Buyers",
+      "p1": "Megacore International is a Pakistan-based sportswear manufacturer and exporter serving brands, distributors, and bulk buyers across Europe, North America, the Middle East, and beyond.",
+      "p2": "We operate a fully integrated production facility — from fabric sourcing and pattern development through to finishing and export-ready packaging. Every order is handled with precision, consistency, and professional communication.",
+      "cta": "Learn About Us",
+      "pillars": [
+        {
+          "title": "Vertically Integrated",
+          "desc": "Design, cut, sew, finish, and pack under one roof — no outsourcing, no quality gaps."
+        },
+        {
+          "title": "Export-Ready",
+          "desc": "Compliant documentation, international packaging standards, and freight-ready dispatch."
+        },
+        {
+          "title": "Quality Controlled",
+          "desc": "ISO 9001 certified processes with inline inspection at every production stage."
+        }
+      ]
+    },
+    "productShowcase": {
+      "label": "Product Categories",
+      "heading": "What We Manufacture",
+      "cta": "View All Products",
+      "explore": "Explore",
+      "categories": [
+        {
+          "name": "Sports Wear",
+          "slug": "sports-wear",
+          "desc": "Basketball, soccer, cricket, volleyball, and team uniforms. Jerseys, tracksuits, cycling wear, swimming wear, caps, and bags.",
+          "moq": "MOQ: 50 pcs",
+          "items": [
+            "Basketball Uniforms",
+            "Soccer Jerseys",
+            "Cricket Uniforms",
+            "Cycling Wear",
+            "Sports Caps",
+            "Sports Bags"
+          ]
+        },
+        {
+          "name": "Fitness Wear",
+          "slug": "fitness-wear",
+          "desc": "High-performance gym wear for men and women. Leggings, shorts, singlets, gloves, straps, and belts.",
+          "moq": "MOQ: 50 pcs",
+          "items": [
+            "Leggings",
+            "Women Singlet",
+            "Gym Shorts",
+            "Gym Gloves",
+            "Gym Straps",
+            "Gym Belts"
+          ]
+        },
+        {
+          "name": "Casual Wear",
+          "slug": "casual-wear",
+          "desc": "Hoodies, tracksuits, polo shirts, T-shirts, sweatshirts, and everyday athletic lifestyle wear.",
+          "moq": "MOQ: 50 pcs",
+          "items": [
+            "Hoodies",
+            "Track Suits",
+            "Polo Shirts",
+            "T-Shirts",
+            "Sweat Shirts",
+            "Tees"
+          ]
+        }
+      ]
+    },
+    "whyChoose": {
+      "label": "Why Megacore",
+      "heading": "Why Global Buyers Choose Us",
+      "reasons": [
+        {
+          "title": "Vertically Integrated Production",
+          "desc": "Every stage — fabric, cutting, sewing, finishing, packing — happens in-house. No subcontracting means consistent quality and faster turnaround."
+        },
+        {
+          "title": "Custom Manufacturing & OEM",
+          "desc": "We build to your spec. Custom logos, private labels, unique fabrics, and bespoke sizing are all standard offerings."
+        },
+        {
+          "title": "Export-Grade Professionalism",
+          "desc": "Experienced in international trade documentation, compliance, and freight coordination for buyers worldwide."
+        },
+        {
+          "title": "MOQ-Friendly Bulk Orders",
+          "desc": "Minimum order of just 50 pieces makes us accessible to growing brands and established distributors alike."
+        },
+        {
+          "title": "Direct Communication",
+          "desc": "No middlemen. You communicate directly with our production team from inquiry through delivery."
+        },
+        {
+          "title": "Consistent Quality Standards",
+          "desc": "ISO 9001 certified processes with inline QC at every stage. What you approve in sampling is what you receive in bulk."
+        }
+      ]
+    },
+    "oem": {
+      "label": "OEM & Private Label",
+      "heading": "Custom Manufacturing, Your Brand",
+      "p1": "We manufacture under your brand identity. Whether you need a private label collection, custom team kits, or a fully bespoke product line, our OEM capability covers every detail.",
+      "p2": "From fabric selection and colorways to custom packaging and labeling — we handle the production, you own the brand.",
+      "cta": "Explore OEM Services",
+      "features": [
+        "Custom Logos & Branding",
+        "Screen Print / Embroidery / DTF",
+        "Custom Sizes & Fits",
+        "Private Label Packaging",
+        "Custom Fabrics & Colors",
+        "Export-Ready Delivery"
+      ]
+    },
+    "processFlow": {
+      "label": "How It Works",
+      "heading": "The Order Process",
+      "sub": "A straightforward, professional workflow from first contact to delivery.",
+      "stepWord": "Step",
+      "cta": "Full Process Details",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Send Inquiry",
+          "desc": "Share your product requirements, quantities, and timeline via WhatsApp or email."
+        },
+        {
+          "step": "02",
+          "title": "Confirm Details",
+          "desc": "We review specs, suggest materials, and confirm pricing and lead times."
+        },
+        {
+          "step": "03",
+          "title": "Advance Payment",
+          "desc": "Production begins after advance payment confirmation per agreed terms."
+        },
+        {
+          "step": "04",
+          "title": "Sampling",
+          "desc": "Pre-production samples are prepared and shared for your approval."
+        },
+        {
+          "step": "05",
+          "title": "Mass Production",
+          "desc": "Full production runs with inline quality checks at every stage."
+        },
+        {
+          "step": "06",
+          "title": "Shipment",
+          "desc": "Export-ready packaging, documentation, and freight coordination handled."
+        }
+      ]
+    },
+    "moq": {
+      "label": "MOQ & Payment",
+      "heading": "Clear Terms, No Surprises",
+      "p1": "We operate on a straightforward bulk order model. Our minimum order quantity of 50 pieces per style makes us accessible to growing brands while our production capacity handles large-scale orders with equal efficiency.",
+      "p2": "All orders are processed on an advance payment basis. We discuss requirements fully before any commitment — no pressure, no ambiguity.",
+      "cta": "View Full Policy",
+      "policies": [
+        {
+          "label": "Minimum Order Quantity",
+          "value": "50 Pieces",
+          "note": "Per style, per color"
+        },
+        {
+          "label": "Payment Terms",
+          "value": "Advance Basis",
+          "note": "Agreed % before production"
+        },
+        {
+          "label": "Sample Lead Time",
+          "value": "5–7 Days",
+          "note": "Pre-production samples"
+        },
+        {
+          "label": "Production Lead Time",
+          "value": "15–25 Days",
+          "note": "After sample approval"
+        }
+      ]
+    },
+    "quality": {
+      "label": "Quality Standards",
+      "heading": "Manufacturing You Can Rely On",
+      "intro": "Every garment that leaves our facility has passed through a structured quality process. We don't ship product we wouldn't be proud to put our name on.",
+      "standards": [
+        {
+          "title": "ISO 9001 Certified",
+          "desc": "Our quality management system meets international standards for consistent, auditable production."
+        },
+        {
+          "title": "Inline Quality Control",
+          "desc": "QC checks at cutting, sewing, finishing, and packing stages — defects caught before they reach you."
+        },
+        {
+          "title": "Precision Pattern Making",
+          "desc": "Graded patterns developed in-house for accurate sizing across all garment categories."
+        },
+        {
+          "title": "Export-Ready Packaging",
+          "desc": "Poly-bagged, carton-packed, and labeled to international retail and wholesale standards."
+        }
+      ]
+    },
+    "buyerTrust": {
+      "label": "International Buyers",
+      "heading": "Built For Global Trade",
+      "p1": "We work with buyers across Europe, North America, the Middle East, Africa, and Asia. Our export experience means we understand what international buyers need — reliable communication, consistent quality, and professional handling.",
+      "p2": "Whether you're placing your first order or scaling an existing relationship, we operate with the same level of professionalism at every stage.",
+      "commitmentsTitle": "Our Commitments",
+      "commitments": [
+        "We respond to every inquiry within 24 hours.",
+        "Samples are prepared before bulk production begins.",
+        "You approve before we produce — no surprises.",
+        "Export documentation handled professionally.",
+        "Direct communication with our production team.",
+        "Long-term partnerships built on consistency."
+      ]
+    },
+    "testimonials": {
+      "label": "Buyer Confidence",
+      "heading": "What Our Buyers Say",
+      "quotes": [
+        {
+          "quote": "Consistent quality across every bulk order. Sampling was fast, communication was clear, and delivery was on schedule. Exactly what we needed from a manufacturing partner.",
+          "name": "Bulk Buyer",
+          "region": "United Kingdom",
+          "initial": "B"
+        },
+        {
+          "quote": "We've worked with several manufacturers. Megacore stands out for their professionalism and attention to detail. Our custom jerseys were exactly as approved in sampling.",
+          "name": "Sports Brand",
+          "region": "Germany",
+          "initial": "S"
+        },
+        {
+          "quote": "The OEM process was smooth from start to finish. Custom packaging, private labels, and the quality was export-grade. We'll be placing repeat orders.",
+          "name": "Distributor",
+          "region": "UAE",
+          "initial": "D"
+        }
+      ]
+    },
+    "faq": {
+      "label": "FAQ",
+      "heading": "Common Questions",
+      "intro": "Everything you need to know before placing your first order with Megacore International.",
+      "cta": "Ask a Question",
+      "items": [
+        {
+          "q": "What is the minimum order quantity?",
+          "a": "Our MOQ is 50 pieces per style, per color. This applies to all product categories including custom OEM orders."
+        },
+        {
+          "q": "Do you offer custom manufacturing and private labeling?",
+          "a": "Yes. We offer full OEM services including custom logos, private labels, custom fabrics, colorways, sizing, and packaging."
+        },
+        {
+          "q": "How does the inquiry process work?",
+          "a": "Send us your requirements via WhatsApp or email. We'll review your specs, provide pricing, and confirm lead times before any commitment."
+        },
+        {
+          "q": "Is advance payment required?",
+          "a": "Yes, we operate on an advance payment basis. The exact terms are agreed upon before production begins."
+        },
+        {
+          "q": "Can I discuss requirements before placing an order?",
+          "a": "Absolutely. We encourage full discussion of your requirements before any order is placed. There's no obligation to commit until you're satisfied."
+        },
+        {
+          "q": "What countries do you export to?",
+          "a": "We export globally — including Europe, North America, the Middle East, Africa, and Asia. We handle all export documentation."
+        }
+      ]
+    },
+    "contactPreview": {
+      "label": "Get In Touch",
+      "heading": "Ready To Start Your Order?",
+      "p1": "Send us your requirements and we'll respond within 24 hours. No commitment required — just a conversation about what you need and how we can deliver it.",
+      "wa": "WhatsApp Us",
+      "email": "Send Email",
+      "formTitle": "Quick Inquiry",
+      "placeholders": [
+        "Your Name",
+        "Company / Brand",
+        "Product Requirements"
+      ],
+      "cta": "Send Inquiry"
+    },
+    "cta": {
+      "label": "Start Today",
+      "heading": "Launch Your Next Collection With Megacore",
+      "p1": "From concept to export-ready production. Professional manufacturing, direct communication, and consistent quality — every order, every time.",
+      "primary": "Request a Quote",
+      "wa": "WhatsApp"
+    }
+  },
+  "contact": {
+    "eyebrow": "Get In Touch",
+    "title": "Start Your Order Discussion",
+    "subtitle": "Send us your requirements and we'll respond within 24 hours. No commitment required — just a professional conversation about what you need and how we can deliver it.",
+    "detailsTitle": "Contact Details",
+    "commitmentsTitle": "Response Commitments",
+    "commitments": [
+      "Reply within 24 business hours",
+      "No commitment required to inquire",
+      "Direct communication — no middlemen",
+      "Samples before bulk production",
+      "Professional export documentation"
+    ],
+    "waChat": "Chat on WhatsApp",
+    "formTitle": "Send an Inquiry",
+    "sentTitle": "Message Sent!",
+    "sentBody": "Your inquiry has been sent via WhatsApp. We'll respond within 24 hours.",
+    "sendAnother": "Send another inquiry",
+    "labels": {
+      "name": "Full Name *",
+      "company": "Company / Brand",
+      "email": "Email Address *",
+      "country": "Country",
+      "category": "Product Category",
+      "quantity": "Estimated Quantity",
+      "message": "Message / Requirements"
+    },
+    "placeholders": {
+      "name": "Your name",
+      "company": "Company name",
+      "email": "your@email.com",
+      "country": "Your country",
+      "quantity": "e.g. 500 pcs",
+      "message": "Describe your product requirements, customization needs, timeline..."
+    },
+    "selectCategory": "Select category",
+    "catSports": "Sports Wear",
+    "catFitness": "Fitness Wear",
+    "catCasual": "Casual Wear",
+    "catOem": "Custom OEM / Private Label",
+    "submitWa": "Send via WhatsApp",
+    "waHint": "WhatsApp opens with your message pre-filled — tap {{send}} to submit your inquiry",
+    "faqEyebrow": "Before You Inquire",
+    "faqTitle": "Quick Answers",
+    "faqItems": [
+      {
+        "q": "What is the minimum order quantity?",
+        "a": "50 pieces per style, per color. This applies to all categories including custom OEM orders."
+      },
+      {
+        "q": "Do I need to commit before discussing?",
+        "a": "No. We encourage full discussion of your requirements before any order is placed. There is no obligation until you are satisfied."
+      },
+      {
+        "q": "How long does sampling take?",
+        "a": "Pre-production samples are typically ready in 5–7 business days from order confirmation."
+      },
+      {
+        "q": "Is advance payment required?",
+        "a": "Yes. All orders are processed on an advance payment basis. The exact percentage is agreed before production begins."
+      },
+      {
+        "q": "Do you offer custom logos and private labels?",
+        "a": "Yes. Full OEM and private label services are available including custom logos, labels, packaging, and branding."
+      }
+    ],
+    "waLabels": {
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location"
+    }
+  },
+  "whatsapp": {
+    "contactIntro": "Hello, I am contacting you from the Megacore International website.",
+    "contactFields": "Name: {{name}}\nCompany: {{company}}\nEmail: {{email}}\nCountry: {{country}}\nProduct Category: {{category}}\nQuantity: {{quantity}}\n\nMessage:\n{{message}}\n\nThank you.",
+    "wishlistGreeting": "Hello,",
+    "wishlistFrom": "I am contacting you from the Megacore International website.",
+    "wishlistBuyer": "Buyer Details:",
+    "wishlistName": "Name:",
+    "wishlistCompany": "Company:",
+    "wishlistEmail": "Email:",
+    "wishlistCountry": "Country:",
+    "wishlistIntro": "I am interested in discussing an order for the following products:",
+    "wishlistLineProduct": "Product:",
+    "wishlistLineCode": "Code:",
+    "wishlistLineCategory": "Category:",
+    "wishlistLineQty": "Quantity:",
+    "wishlistLineNotes": "Notes:",
+    "wishlistClosing": "Please share product details, pricing, customization options, and next steps for order discussion.",
+    "wishlistThanks": "Thank you.",
+    "wishlistPieceSuffix": " pcs"
+  },
+  "products": {
+    "catalogEyebrow": "كتالوج المنتجات",
+    "title": "منتجاتنا",
+    "subtitle": "تصفح حسب الفئة. سجّل الدخول لعرض الأسعار وحفظ المنتجات في قائمتك."
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "subtitle": "Review products and send a WhatsApp inquiry to discuss pricing and orders.",
+    "emptyTitle": "Your wishlist is empty",
+    "emptyBody": "Browse products and add items you are interested in.",
+    "browseProducts": "Browse Products",
+    "signInToView": "Sign in to view prices",
+    "signInHint": "Create an account or sign in to see product pricing and save items.",
+    "totalItems": "{{count}} items",
+    "inquiryTitle": "Send inquiry via WhatsApp",
+    "inquiryBody": "We will pre-fill a message with your wishlist items.",
+    "openWhatsApp": "Open WhatsApp",
+    "clearAll": "Clear all",
+    "remove": "Remove",
+    "qty": "Qty",
+    "notes": "Notes",
+    "notesPh": "Optional notes",
+    "yourDetails": "Your Details",
+    "detailsHint": "Optional — included in your WhatsApp message",
+    "skip": "Skip",
+    "waPrefillHint": "WhatsApp opens with your message pre-filled — tap {{send}} to submit",
+    "piece": "pcs",
+    "gateTitle": "Sign In Required",
+    "gateBody": "Create an account or sign in to access your wishlist, view product pricing, and proceed to discussion.",
+    "gateCta": "Sign In / Register",
+    "savedEyebrow": "My Wishlist",
+    "savedTitle": "Saved Products",
+    "readyTitle": "Ready to Discuss?",
+    "readySubPlural": "{{count}} products · Total qty: {{total}} pcs",
+    "readySubSingular": "1 product · Total qty: {{total}} pcs",
+    "proceedCta": "Proceed to Discussion",
+    "proceedHelp": "Click Proceed to Discussion to open WhatsApp with a pre-written message containing all your selected products, quantities, and notes. Our team will respond within 24 hours.",
+    "waListHint": "Opens WhatsApp with your product list pre-filled — tap {{send}} to submit your inquiry",
+    "customizationNotes": "Customization Notes",
+    "notesPlaceholder": "Colors, logo, size breakdown...",
+    "fullNamePh": "Full Name",
+    "emailAddrPh": "Email Address",
+    "contactForPrice": "Contact for price",
+    "usdPerPc": "USD {{price}} / pc",
+    "quantityMin": "Quantity (min {{moq}} pcs)"
+  },
+  "about": {
+    "hero": {
+      "label": "About Megacore International",
+      "title1": "Engineered In Industry,",
+      "title2": "Driven By Sport",
+      "intro": "Megacore International is a Pakistan-based sportswear manufacturer and exporter serving brands, distributors, and bulk buyers across Europe, North America, the Middle East, and beyond. We combine factory-scale execution with a performance-first product mindset.",
+      "ctaDiscuss": "Start a Discussion",
+      "ctaProducts": "View Products",
+      "altFacility": "Megacore manufacturing facility"
+    },
+    "stats": [
+      {
+        "v": "280K+",
+        "l": "Units / Month"
+      },
+      {
+        "v": "42+",
+        "l": "Export Countries"
+      },
+      {
+        "v": "ISO 9001",
+        "l": "Certified"
+      },
+      {
+        "v": "50 pcs",
+        "l": "Min. Order Qty"
+      }
+    ],
+    "whoWeAre": {
+      "label": "Who We Are",
+      "heading": "A Manufacturer Built For Global Buyers",
+      "p1": "Founded with a clear mission — to deliver export-grade sportswear manufacturing with the professionalism and reliability that international buyers demand — Megacore International has grown into a trusted production partner for brands, distributors, and sports organisations worldwide.",
+      "p2": "We operate a fully integrated production facility in Pakistan, one of the world's leading textile and sportswear manufacturing hubs. From fabric sourcing and pattern development through to finishing, quality inspection, and export-ready packaging — every stage happens under one roof.",
+      "p3": "Our team of production specialists, quality controllers, and export coordinators work together to ensure that every order — whether 50 pieces or 50,000 — is handled with the same level of precision and care.",
+      "altFactory": "Megacore production facility",
+      "badgeEst": "Est.",
+      "badgePakistan": "Pakistan",
+      "badgeHub": "Sialkot — Textile Hub",
+      "badgeCapacity": "Capacity",
+      "badgeUnits": "Units per month"
+    },
+    "story": {
+      "label": "Our Story",
+      "heading": "Built On Precision, Grown On Trust",
+      "p1": "Megacore International was established with a simple but powerful belief: that international buyers deserve a manufacturing partner who communicates clearly, delivers consistently, and treats every order with the same professional discipline — regardless of size.",
+      "p2": "Starting with a focused range of sports jerseys and team uniforms, we expanded our capabilities year by year — adding fitness wear, casual sportswear, accessories, and full OEM/private label services as our client base grew across Europe, the Middle East, and North America.",
+      "p3": "Today, Megacore International is a vertically integrated operation with in-house fabric sourcing, pattern making, cutting, sewing, finishing, quality control, and export packaging — all under one roof, all managed by our own team.",
+      "altTeam": "Megacore team",
+      "badgeTeam": "Team",
+      "badgeCount": "95+",
+      "badgeRole": "Production specialists"
+    },
+    "whatWeMake": {
+      "label": "What We Manufacture",
+      "heading": "A Full Range of Sportswear",
+      "intro": "From team uniforms to fitness wear, casual sportswear to accessories — we manufacture across all major sportswear categories.",
+      "cards": [
+        {
+          "cat": "Sports Wear",
+          "items": "Jerseys, Tracksuits, Uniforms, Cycling Wear, Swimming Wear"
+        },
+        {
+          "cat": "Casual Wear",
+          "items": "Hoodies, T-Shirts, Polo Shirts, Sweatshirts, Track Suits"
+        },
+        {
+          "cat": "Fitness Wear",
+          "items": "Gym Shorts, Leggings, Sports Bras, Singlets, Gym Gloves"
+        }
+      ],
+      "moq": "MOQ: 50 pcs",
+      "viewProducts": "View Products"
+    },
+    "values": {
+      "label": "Our Values",
+      "heading": "What Drives Everything We Do",
+      "items": [
+        {
+          "title": "Precision",
+          "desc": "Every garment is built to exact specifications. Pattern accuracy, stitch quality, and finishing standards are non-negotiable."
+        },
+        {
+          "title": "Partnership",
+          "desc": "We treat every buyer as a long-term partner. Clear communication, honest timelines, and consistent delivery build lasting relationships."
+        },
+        {
+          "title": "Speed",
+          "desc": "Rapid sampling, efficient production scheduling, and streamlined export processes mean faster time-to-market for your brand."
+        },
+        {
+          "title": "Quality",
+          "desc": "ISO 9001 certified processes with inline QC at every stage. What you approve in sampling is exactly what you receive in bulk."
+        }
+      ]
+    },
+    "manufacturing": {
+      "label": "Manufacturing Capability",
+      "heading": "Vertically Integrated Production",
+      "intro": "Our production facility handles every stage of the manufacturing process in-house. This means no outsourcing, no quality gaps, and complete control over timelines and standards.",
+      "stepLabel": "Step",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Fabric Sourcing & Selection",
+          "desc": "We source from certified fabric mills — polyester, nylon, spandex, cotton, and technical performance fabrics."
+        },
+        {
+          "step": "02",
+          "title": "Pattern Making & Cutting",
+          "desc": "In-house pattern development with graded sizing. Precision cutting using modern equipment for consistent results."
+        },
+        {
+          "step": "03",
+          "title": "Sewing & Assembly",
+          "desc": "Skilled production team with experience across all garment types — jerseys, tracksuits, compression wear, and more."
+        },
+        {
+          "step": "04",
+          "title": "Quality Control & Finishing",
+          "desc": "Inline QC at every stage. Final inspection before packaging. ISO 9001 certified processes throughout."
+        },
+        {
+          "step": "05",
+          "title": "Export Packaging & Dispatch",
+          "desc": "Poly-bagged, carton-packed, and labeled to international standards. Export documentation handled professionally."
+        }
+      ],
+      "altQuality": "Quality control",
+      "altProduction": "Production",
+      "altFinished": "Finished products"
+    },
+    "export": {
+      "label": "Global Export",
+      "heading": "Export-Ready For Global Trade",
+      "p1": "We serve buyers across Europe, North America, the Middle East, Africa, and Asia. Our export experience means we understand what international buyers need — reliable communication, consistent quality, and professional handling from first inquiry to final delivery.",
+      "p2": "All export documentation — commercial invoice, packing list, certificate of origin, and shipping coordination — is handled by our team. We work with FOB, CIF, and EXW terms depending on buyer preference.",
+      "regions": [
+        "Europe — UK, Germany, France, Netherlands, Spain",
+        "North America — USA, Canada",
+        "Middle East — UAE, Saudi Arabia, Qatar, Kuwait",
+        "Africa — South Africa, Nigeria, Kenya",
+        "Asia — Australia, New Zealand, Southeast Asia"
+      ],
+      "altGlobal": "Global export",
+      "badgeMarkets": "Export Markets",
+      "badgeCountries": "42+ Countries",
+      "badgeOnTime": "On-Time Rate",
+      "badgeRate": "98.4%"
+    },
+    "quality": {
+      "label": "Quality Standards",
+      "heading": "Manufacturing You Can Rely On",
+      "items": [
+        {
+          "title": "ISO 9001 Certified",
+          "desc": "Our quality management system meets international standards for consistent, auditable production processes."
+        },
+        {
+          "title": "Inline QC",
+          "desc": "Quality checks at cutting, sewing, finishing, and packing stages. Defects are caught before they reach you."
+        },
+        {
+          "title": "Precision Patterns",
+          "desc": "Graded patterns developed in-house for accurate sizing across all garment categories and size ranges."
+        },
+        {
+          "title": "Export Packaging",
+          "desc": "Poly-bagged, carton-packed, and labeled to international retail and wholesale standards."
+        }
+      ]
+    },
+    "why": {
+      "label": "Why Megacore",
+      "heading": "Why Global Buyers Choose Us",
+      "p1": "We are not a trading company or a middleman. We are the manufacturer. When you work with Megacore International, you communicate directly with the people who make your products — no layers, no delays, no miscommunication.",
+      "p2": "Our MOQ of 50 pieces makes us accessible to growing brands, while our production capacity of 280,000+ units per month means we can scale with you as your business grows.",
+      "commitmentsTitle": "Our Commitments",
+      "commitments": [
+        "Direct communication — no middlemen, no delays",
+        "Samples prepared before bulk production begins",
+        "You approve before we produce — no surprises",
+        "ISO 9001 certified quality management",
+        "Export documentation handled professionally",
+        "MOQ of just 50 pieces per style",
+        "15–25 day production lead time",
+        "Long-term partnerships built on consistency"
+      ]
+    },
+    "cta": {
+      "label": "Get In Touch",
+      "heading": "Ready To Work With Megacore?",
+      "body": "Send us your requirements and we will respond within 24 hours. No commitment required — just a professional conversation about what you need and how we can deliver it.",
+      "discuss": "Start a Discussion",
+      "products": "View Products"
+    }
+  },
+  "capabilities": {
+    "heroEyebrow": "Custom Manufacturing & OEM",
+    "heroTitle1": "Custom Manufacturing,",
+    "heroTitle2": "Your Brand",
+    "heroIntro": "Megacore International offers full OEM and private label manufacturing. We build to your exact specification — from fabric and colorways to custom logos, packaging, and labeling. You own the brand. We handle the production.",
+    "oemEyebrow": "OEM Services",
+    "oemHeading": "What We Offer",
+    "oemFeatures": [
+      {
+        "title": "Custom Logos & Branding",
+        "desc": "Embroidery, screen print, sublimation, DTF, and woven labels — your brand identity applied with precision."
+      },
+      {
+        "title": "Private Label Packaging",
+        "desc": "Custom hang tags, poly bags, carton labels, and retail-ready packaging designed to your spec."
+      },
+      {
+        "title": "Custom Sizes & Fits",
+        "desc": "Graded sizing from XS to 3XL, plus custom size charts for specific markets or athletic requirements."
+      },
+      {
+        "title": "Custom Fabrics & Colors",
+        "desc": "Access to a wide range of performance fabrics — polyester, nylon, spandex, cotton blends — in any Pantone color."
+      },
+      {
+        "title": "Full Production Control",
+        "desc": "Vertically integrated facility means every stage — cutting, sewing, finishing — is managed in-house."
+      },
+      {
+        "title": "Export-Ready Delivery",
+        "desc": "All OEM orders are packed, documented, and dispatched to international standards. FOB or EXW available."
+      }
+    ],
+    "productionEyebrow": "Production Capability",
+    "productionHeading": "Integrated Industrial Capacity",
+    "productionIntro": "Every stage from development to dispatch runs inside our synchronized production facility. No outsourcing. No quality gaps. Complete control over timelines and standards.",
+    "stepWord": "Step",
+    "productionSteps": [
+      {
+        "step": "01",
+        "title": "Fabric Sourcing & Selection",
+        "desc": "Certified fabric mills — polyester, nylon, spandex, cotton, and technical performance fabrics."
+      },
+      {
+        "step": "02",
+        "title": "Pattern Making & Precision Cutting",
+        "desc": "In-house pattern development with graded sizing. Modern cutting equipment for consistent results."
+      },
+      {
+        "step": "03",
+        "title": "Sewing & Assembly",
+        "desc": "Skilled team across all garment types — jerseys, tracksuits, compression wear, gym accessories."
+      },
+      {
+        "step": "04",
+        "title": "Quality Control & Finishing",
+        "desc": "Inline QC at every stage. ISO 9001 certified processes. Final inspection before packaging."
+      },
+      {
+        "step": "05",
+        "title": "Export Packaging & Dispatch",
+        "desc": "Poly-bagged, carton-packed, labeled to international standards. Export documentation handled."
+      }
+    ],
+    "stats": [
+      {
+        "v": "280K+",
+        "l": "Units / Month"
+      },
+      {
+        "v": "ISO 9001",
+        "l": "Certified"
+      },
+      {
+        "v": "50 pcs",
+        "l": "Min. Order"
+      },
+      {
+        "v": "15–25d",
+        "l": "Lead Time"
+      },
+      {
+        "v": "42+",
+        "l": "Export Countries"
+      },
+      {
+        "v": "98.4%",
+        "l": "On-Time Rate"
+      }
+    ],
+    "decoEyebrow": "Decoration Methods",
+    "decoHeading": "Branding Techniques",
+    "decoItems": [
+      {
+        "title": "Sublimation Printing",
+        "desc": "Full-color all-over prints with no hand feel. Ideal for jerseys and performance wear. Unlimited colors."
+      },
+      {
+        "title": "Screen Printing",
+        "desc": "Bold, durable prints for hoodies, T-shirts, and casual wear. Best for spot colors and large runs."
+      },
+      {
+        "title": "Embroidery",
+        "desc": "Premium raised logo application for caps, polo shirts, and branded apparel. Woven thread finish."
+      },
+      {
+        "title": "DTF / Heat Transfer",
+        "desc": "Direct-to-film transfers for complex multi-color designs on any fabric type. No minimum."
+      }
+    ],
+    "qualityEyebrow": "Quality Standards",
+    "qualityHeading": "Manufacturing You Can Rely On",
+    "qualityBody": "Every garment that leaves our facility has passed through a structured quality process. ISO 9001 certified. Inline QC at every stage. What you approve in sampling is what you receive in bulk.",
+    "qualityBullets": [
+      "ISO 9001 certified quality management system",
+      "Inline QC at cutting, sewing, finishing, and packing",
+      "Pre-production samples before bulk production",
+      "AQL-compliant final inspection",
+      "Export documentation handled professionally",
+      "Direct communication — no middlemen"
+    ],
+    "ctaHeading": "Ready to Start Your OEM Order?",
+    "ctaBody": "Share your requirements and we'll respond within 24 hours. No commitment required.",
+    "ctaButton": "Start a Discussion"
+  },
+  "process": {
+    "heroEyebrow": "MOQ & Order Process",
+    "heroTitle": "Clear Terms, Simple Process",
+    "heroIntro": "A straightforward, professional workflow from first contact to delivery. No surprises, no pressure — just clear communication and consistent execution at every stage.",
+    "moqEyebrow": "MOQ & Payment Policy",
+    "moqHeading": "Order Terms",
+    "moqCards": [
+      {
+        "v": "50 Pieces",
+        "l": "Minimum Order Qty",
+        "note": "Per style, per color"
+      },
+      {
+        "v": "Advance",
+        "l": "Payment Basis",
+        "note": "Agreed % before production"
+      },
+      {
+        "v": "5–7 Days",
+        "l": "Sample Lead Time",
+        "note": "Pre-production samples"
+      },
+      {
+        "v": "15–25 Days",
+        "l": "Production Lead Time",
+        "note": "After sample approval"
+      }
+    ],
+    "stepsEyebrow": "Step by Step",
+    "stepsHeading": "The Order Process",
+    "stepLabel": "Step",
+    "steps": [
+      {
+        "step": "01",
+        "title": "Send Your Inquiry",
+        "desc": "Contact us via WhatsApp or email with your product requirements — category, quantity, sizes, colors, and any customization details. No commitment required at this stage.",
+        "time": "Day 1"
+      },
+      {
+        "step": "02",
+        "title": "Confirm Specifications",
+        "desc": "We review your requirements, suggest suitable fabrics and construction methods, confirm pricing, and agree on lead times. All details are confirmed in writing before proceeding.",
+        "time": "Day 1–2"
+      },
+      {
+        "step": "03",
+        "title": "Advance Payment",
+        "desc": "Production begins after advance payment confirmation per agreed terms. We discuss payment percentage and method before any commitment is made.",
+        "time": "Day 2–3"
+      },
+      {
+        "step": "04",
+        "title": "Pre-Production Sampling",
+        "desc": "We prepare pre-production samples and share them with you for approval. Bulk production does not begin until you have approved the sample in writing.",
+        "time": "Day 5–10"
+      },
+      {
+        "step": "05",
+        "title": "Mass Production",
+        "desc": "Full production run begins after sample approval. Inline quality checks at cutting, sewing, finishing, and packing stages throughout the production run.",
+        "time": "Day 10–30"
+      },
+      {
+        "step": "06",
+        "title": "Shipment & Export",
+        "desc": "Export-ready packaging, commercial invoice, packing list, certificate of origin, and freight coordination. We handle all documentation for smooth customs clearance.",
+        "time": "Day 30–35"
+      }
+    ],
+    "commitmentsEyebrow": "Our Commitments",
+    "commitmentsHeading": "What You Can Expect",
+    "commitmentsIntro": "We operate with full transparency at every stage. No hidden costs, no production surprises, and no bulk shipment without your sample approval.",
+    "commitments": [
+      "Response to every inquiry within 24 hours",
+      "Full specification discussion before any commitment",
+      "Pre-production sample before bulk production begins",
+      "You approve before we produce — no exceptions",
+      "Inline quality checks throughout production",
+      "Export documentation handled professionally",
+      "Direct communication with our production team",
+      "Consistent quality from sample to bulk"
+    ],
+    "shippingEyebrow": "Shipping & Export",
+    "shippingHeading": "Export Terms",
+    "shippingCards": [
+      {
+        "title": "FOB — Free On Board",
+        "desc": "We deliver goods to the port of shipment. Buyer arranges freight from port. Most common for experienced importers."
+      },
+      {
+        "title": "CIF — Cost, Insurance & Freight",
+        "desc": "We cover cost, insurance, and freight to the destination port. Buyer handles import clearance and local delivery."
+      },
+      {
+        "title": "EXW — Ex Works",
+        "desc": "Buyer collects from our facility. Full control over freight and logistics. Best for buyers with established freight partners."
+      }
+    ],
+    "ctaHeading": "Ready to Place Your Order?",
+    "ctaBody": "Start with an inquiry. No commitment required until you're fully satisfied with the terms.",
+    "ctaInquiry": "Send Inquiry",
+    "ctaWhatsApp": "WhatsApp"
+  },
+  "terms": {
+    "backHome": "Back to Home",
+    "eyebrow": "Legal & Policy",
+    "title": "Terms & Policy",
+    "intro": "Order terms, MOQ policy, payment conditions, and production guidelines for all Megacore International orders. Please read before placing an inquiry.",
+    "updated": "Last updated: January 2025",
+    "jumpTo": "Jump to section",
+    "ctaTitle": "Questions About Our Terms?",
+    "ctaBody": "Contact us directly before placing an order. We're happy to clarify any policy or discuss custom arrangements.",
+    "ctaButton": "Contact Us",
+    "sections": [
+      {
+        "id": "moq",
+        "title": "Minimum Order Quantity (MOQ)",
+        "content": [
+          "The minimum order quantity is 50 pieces per style, per color.",
+          "MOQ applies to all product categories including custom OEM, private label, and standard sportswear lines.",
+          "Orders below the MOQ threshold may be considered on a case-by-case basis and may be subject to a small-order surcharge.",
+          "Bulk orders above 500 pieces per style qualify for volume pricing — contact us for a custom quote."
+        ]
+      },
+      {
+        "id": "payment",
+        "title": "Payment Terms",
+        "content": [
+          "All orders are processed on an advance payment basis.",
+          "A deposit is required before production commences. The exact percentage is agreed upon during the order confirmation stage.",
+          "The remaining balance is due prior to shipment unless otherwise agreed in writing.",
+          "Accepted payment methods include bank transfer (T/T), Western Union, and other methods as mutually agreed.",
+          "All prices are quoted in USD unless otherwise specified."
+        ]
+      },
+      {
+        "id": "sampling",
+        "title": "Sampling Policy",
+        "content": [
+          "Pre-production samples are prepared for all new orders before bulk production begins.",
+          "Standard sample lead time is 5–7 business days from order confirmation.",
+          "Sample costs may apply and are typically deducted from the bulk order invoice upon confirmation.",
+          "Bulk production does not commence until the buyer has approved the pre-production sample in writing.",
+          "Any changes requested after sample approval may affect lead times and pricing."
+        ]
+      },
+      {
+        "id": "production",
+        "title": "Production Lead Times",
+        "content": [
+          "Standard production lead time is 15–25 business days after sample approval and advance payment confirmation.",
+          "Lead times may vary depending on order volume, fabric availability, and seasonal demand.",
+          "Rush production may be available for an additional fee — subject to capacity.",
+          "Megacore International will communicate any delays promptly and work to minimise disruption."
+        ]
+      },
+      {
+        "id": "quality",
+        "title": "Quality Assurance",
+        "content": [
+          "All production is carried out under ISO 9001 certified quality management processes.",
+          "Inline quality checks are performed at cutting, sewing, finishing, and packing stages.",
+          "Final inspection is conducted before packaging and shipment.",
+          "Any defective items identified during QC are replaced before dispatch.",
+          "Buyers are encouraged to specify quality standards and tolerances at the order confirmation stage."
+        ]
+      },
+      {
+        "id": "shipping",
+        "title": "Shipping & Export",
+        "content": [
+          "Megacore International ships globally. All major international markets are served.",
+          "Export documentation including commercial invoice, packing list, and certificate of origin is provided as standard.",
+          "Shipping terms (FOB or EXW) are agreed upon at the order confirmation stage.",
+          "Megacore International is not liable for delays caused by customs clearance, freight carriers, or force majeure events.",
+          "Buyers are responsible for import duties, taxes, and customs clearance in their country."
+        ]
+      },
+      {
+        "id": "cancellation",
+        "title": "Order Cancellation & Changes",
+        "content": [
+          "Orders may not be cancelled once production has commenced.",
+          "Changes to specifications after sample approval may not be possible and may affect pricing and lead times.",
+          "Cancellation requests before production begins must be submitted in writing and are subject to a cancellation fee covering costs incurred.",
+          "Megacore International reserves the right to cancel an order if advance payment is not received within the agreed timeframe."
+        ]
+      },
+      {
+        "id": "communication",
+        "title": "Communication & Inquiry",
+        "content": [
+          "All inquiries are responded to within 24 business hours.",
+          "Buyers are encouraged to discuss requirements fully before placing an order — there is no obligation to commit until both parties are satisfied.",
+          "All order confirmations, approvals, and changes must be communicated in writing (email or WhatsApp message).",
+          "Megacore International communicates directly with buyers — no middlemen."
+        ]
+      }
+    ]
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "products": "Products",
+    "categories": "Categories",
+    "subcategories": "Subcategories",
+    "customDesigns": "Custom Designs",
+    "uploadedDesigns": "Uploaded Designs",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "productDetail": {
+    "moq": "MOQ: 50 pcs",
+    "signInPrices": "Sign in to view prices",
+    "requestQuote": "Request Quote",
+    "whatsAppQuote": "WhatsApp Quote",
+    "specs": "Specifications",
+    "related": "Related Products",
+    "notFound": "Product not found.",
+    "pricePerPiece": "Price Per Piece",
+    "contactForPricing": "Contact for pricing",
+    "priceFootnote": "Prices vary by quantity and customization. Contact us for a formal quote.",
+    "priceHiddenTitle": "Price hidden",
+    "loginRegister": "Login or register",
+    "loginRegisterSuffix": "to view pricing and save to wishlist.",
+    "signInSave": "Sign In to Save & View Price"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "body": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "home": "العودة للرئيسية"
+  }
+}

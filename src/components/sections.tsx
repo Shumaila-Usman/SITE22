@@ -29,6 +29,7 @@ import { useState } from "react";
 import { AnimatedSection } from "@/components/animated-section";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/language-context";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -84,14 +85,11 @@ function FadeUp({
 
 // ─── 1. Trust Strip ───────────────────────────────────────────────────────────
 export function StatsStrip() {
-  const items = [
-    { value: "280K+", label: "Units / Month" },
-    { value: "42", label: "Countries Served" },
-    { value: "5 Days", label: "Avg Sample Lead Time" },
-    { value: "98.4%", label: "On-Time Export Dispatch" },
-    { value: "MOQ 50", label: "Minimum Order Qty" },
-    { value: "ISO 9001", label: "Quality Certified" },
-  ];
+  const { t } = useLanguage();
+  const items = [0, 1, 2, 3, 4, 5].map((i) => ({
+    value: t(`sections.statsStrip.items.${i}.value`),
+    label: t(`sections.statsStrip.items.${i}.label`),
+  }));
 
   return (
     <section className="relative border-y border-white/[0.06] bg-zinc-950/60 py-14">
@@ -117,10 +115,11 @@ export function StatsStrip() {
 
 // ─── 2. About Preview ─────────────────────────────────────────────────────────
 export function AboutPreview() {
+  const { t } = useLanguage();
   const pillars = [
-    { icon: Factory, title: "Vertically Integrated", desc: "Design, cut, sew, finish, and pack under one roof — no outsourcing, no quality gaps." },
-    { icon: Globe2, title: "Export-Ready", desc: "Compliant documentation, international packaging standards, and freight-ready dispatch." },
-    { icon: ShieldCheck, title: "Quality Controlled", desc: "ISO 9001 certified processes with inline inspection at every production stage." },
+    { icon: Factory, title: t("sections.aboutPreview.pillars.0.title"), desc: t("sections.aboutPreview.pillars.0.desc") },
+    { icon: Globe2, title: t("sections.aboutPreview.pillars.1.title"), desc: t("sections.aboutPreview.pillars.1.desc") },
+    { icon: ShieldCheck, title: t("sections.aboutPreview.pillars.2.title"), desc: t("sections.aboutPreview.pillars.2.desc") },
   ];
 
   return (
@@ -129,30 +128,25 @@ export function AboutPreview() {
       <div className="grid items-center gap-16 lg:grid-cols-2">
         <div>
           <FadeUp>
-            <SectionLabel>About Megacore</SectionLabel>
+            <SectionLabel>{t("sections.aboutPreview.label")}</SectionLabel>
           </FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mb-6">
-              A Manufacturer Built For Global Buyers
+              {t("sections.aboutPreview.heading")}
             </SectionHeading>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p className="mb-6 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              Megacore International is a Pakistan-based sportswear manufacturer
-              and exporter serving brands, distributors, and bulk buyers across
-              Europe, North America, the Middle East, and beyond.
+              {t("sections.aboutPreview.p1")}
             </p>
             <p className="mb-8 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              We operate a fully integrated production facility — from fabric
-              sourcing and pattern development through to finishing and
-              export-ready packaging. Every order is handled with precision,
-              consistency, and professional communication.
+              {t("sections.aboutPreview.p2")}
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
             <Link href="/about">
               <Button variant="outline" className="group border-white/20 hover:border-white/40">
-                Learn About Us
+                {t("sections.aboutPreview.cta")}
                 <ArrowRight className="h-4 w-4 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" />
               </Button>
             </Link>
@@ -186,53 +180,38 @@ export function AboutPreview() {
 // ─── 3. Product Categories ────────────────────────────────────────────────────
 // ─── 3. Product Categories ────────────────────────────────────────────────────
 export function ProductShowcase() {
-  const categories = [
-    {
-      name: "Sports Wear",
-      slug: "sports-wear",
-      desc: "Basketball, soccer, cricket, volleyball, and team uniforms. Jerseys, tracksuits, cycling wear, swimming wear, caps, and bags.",
-      moq: "MOQ: 50 pcs",
-      image: "/images/products/sports-wear.jpg",
-      items: ["Basketball Uniforms", "Soccer Jerseys", "Cricket Uniforms", "Cycling Wear", "Sports Caps", "Sports Bags"],
-      col: "from-red-600/30",
-      span: "md:col-span-4",
-    },
-    {
-      name: "Fitness Wear",
-      slug: "fitness-wear",
-      desc: "High-performance gym wear for men and women. Leggings, shorts, singlets, gloves, straps, and belts.",
-      moq: "MOQ: 50 pcs",
-      image: "/images/products/fitness-wear.jpg",
-      items: ["Leggings", "Women Singlet", "Gym Shorts", "Gym Gloves", "Gym Straps", "Gym Belts"],
-      col: "from-orange-700/25",
-      span: "md:col-span-4",
-    },
-    {
-      name: "Casual Wear",
-      slug: "casual-wear",
-      desc: "Hoodies, tracksuits, polo shirts, T-shirts, sweatshirts, and everyday athletic lifestyle wear.",
-      moq: "MOQ: 50 pcs",
-      image: "/images/products/casual-wear.jpg",
-      items: ["Hoodies", "Track Suits", "Polo Shirts", "T-Shirts", "Sweat Shirts", "Tees"],
-      col: "from-rose-700/25",
-      span: "md:col-span-4",
-    },
-  ];
+  const { t } = useLanguage();
+  const slugs = ["sports-wear", "fitness-wear", "casual-wear"] as const;
+  const categories = [0, 1, 2].map((i) => {
+    const p = `sections.productShowcase.categories.${i}`;
+    const itemCount = 6;
+    const items = Array.from({ length: itemCount }, (_, j) => t(`${p}.items.${j}`));
+    return {
+      name: t(`${p}.name`),
+      slug: slugs[i],
+      desc: t(`${p}.desc`),
+      moq: t(`${p}.moq`),
+      image: ["/images/products/sports-wear.jpg", "/images/products/fitness-wear.jpg", "/images/products/casual-wear.jpg"][i]!,
+      items,
+      col: ["from-red-600/30", "from-orange-700/25", "from-rose-700/25"][i]!,
+      span: "md:col-span-4" as const,
+    };
+  });
 
   return (
     <AnimatedSection className="relative mx-auto max-w-7xl px-6 py-24" direction="left">
       <div className="section-glow -right-10 top-20" />
       <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <FadeUp><SectionLabel>Product Categories</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.productShowcase.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
-            <SectionHeading>What We Manufacture</SectionHeading>
+            <SectionHeading>{t("sections.productShowcase.heading")}</SectionHeading>
           </FadeUp>
         </div>
         <FadeUp delay={0.2}>
           <Link href="/products">
             <Button variant="outline" className="group border-white/20 hover:border-white/40">
-              View All Products
+              {t("sections.productShowcase.cta")}
               <ArrowRight className="h-4 w-4 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" />
             </Button>
           </Link>
@@ -279,7 +258,7 @@ export function ProductShowcase() {
                 ))}
               </div>
               <Link href={`/products/${c.slug}`} className="mt-auto inline-flex items-center gap-1.5 text-xs font-semibold text-red-400 transition-colors group-hover:text-red-300">
-                Explore <ArrowUpRight className="h-3.5 w-3.5" />
+                {t("sections.productShowcase.explore")} <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </motion.article>
@@ -291,23 +270,21 @@ export function ProductShowcase() {
 
 // ─── 4. Why Choose Us ─────────────────────────────────────────────────────────
 export function WhyChooseUs() {
-  const reasons = [
-    { icon: Factory, title: "Vertically Integrated Production", desc: "Every stage — fabric, cutting, sewing, finishing, packing — happens in-house. No subcontracting means consistent quality and faster turnaround." },
-    { icon: Ruler, title: "Custom Manufacturing & OEM", desc: "We build to your spec. Custom logos, private labels, unique fabrics, and bespoke sizing are all standard offerings." },
-    { icon: Globe2, title: "Export-Grade Professionalism", desc: "Experienced in international trade documentation, compliance, and freight coordination for buyers worldwide." },
-    { icon: Package, title: "MOQ-Friendly Bulk Orders", desc: "Minimum order of just 50 pieces makes us accessible to growing brands and established distributors alike." },
-    { icon: MessageCircle, title: "Direct Communication", desc: "No middlemen. You communicate directly with our production team from inquiry through delivery." },
-    { icon: Award, title: "Consistent Quality Standards", desc: "ISO 9001 certified processes with inline QC at every stage. What you approve in sampling is what you receive in bulk." },
-  ];
+  const { t } = useLanguage();
+  const reasons = [0, 1, 2, 3, 4, 5].map((i) => ({
+    icon: [Factory, Ruler, Globe2, Package, MessageCircle, Award][i]!,
+    title: t(`sections.whyChoose.reasons.${i}.title`),
+    desc: t(`sections.whyChoose.reasons.${i}.desc`),
+  }));
 
   return (
     <AnimatedSection className="relative bg-zinc-950/40 py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-14 text-center">
-          <FadeUp><SectionLabel>Why Megacore</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.whyChoose.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mx-auto max-w-2xl">
-              Why Global Buyers Choose Us
+              {t("sections.whyChoose.heading")}
             </SectionHeading>
           </FadeUp>
         </div>
@@ -336,41 +313,35 @@ export function WhyChooseUs() {
 
 // ─── 5. OEM / Custom Manufacturing ───────────────────────────────────────────
 export function OEMSection() {
-  const features = [
-    { icon: Shirt, label: "Custom Logos & Branding" },
-    { icon: Printer, label: "Screen Print / Embroidery / DTF" },
-    { icon: Ruler, label: "Custom Sizes & Fits" },
-    { icon: Package, label: "Private Label Packaging" },
-    { icon: Zap, label: "Custom Fabrics & Colors" },
-    { icon: Globe2, label: "Export-Ready Delivery" },
-  ];
+  const { t } = useLanguage();
+  const features = [0, 1, 2, 3, 4, 5].map((i) => ({
+    icon: [Shirt, Printer, Ruler, Package, Zap, Globe2][i]!,
+    label: t(`sections.oem.features.${i}`),
+  }));
 
   return (
     <AnimatedSection className="relative mx-auto max-w-7xl px-6 py-24" direction="right">
       <div className="section-glow left-10 top-20" />
       <div className="grid items-center gap-16 lg:grid-cols-2">
         <div>
-          <FadeUp><SectionLabel>OEM & Private Label</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.oem.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mb-6">
-              Custom Manufacturing, Your Brand
+              {t("sections.oem.heading")}
             </SectionHeading>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p className="mb-6 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              We manufacture under your brand identity. Whether you need a
-              private label collection, custom team kits, or a fully bespoke
-              product line, our OEM capability covers every detail.
+              {t("sections.oem.p1")}
             </p>
             <p className="mb-8 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              From fabric selection and colorways to custom packaging and
-              labeling — we handle the production, you own the brand.
+              {t("sections.oem.p2")}
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
             <Link href="/capabilities">
               <Button className="group relative overflow-hidden">
-                Explore OEM Services
+                {t("sections.oem.cta")}
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                 <span aria-hidden className="absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/[0.1] to-transparent transition-transform duration-500 group-hover:translate-x-full" />
               </Button>
@@ -401,28 +372,27 @@ export function OEMSection() {
 
 // ─── 6. Order Process ─────────────────────────────────────────────────────────
 export function ProcessFlow() {
-  const steps = [
-    { icon: MessageCircle, step: "01", title: "Send Inquiry", desc: "Share your product requirements, quantities, and timeline via WhatsApp or email." },
-    { icon: Ruler, step: "02", title: "Confirm Details", desc: "We review specs, suggest materials, and confirm pricing and lead times." },
-    { icon: Gauge, step: "03", title: "Advance Payment", desc: "Production begins after advance payment confirmation per agreed terms." },
-    { icon: Timer, step: "04", title: "Sampling", desc: "Pre-production samples are prepared and shared for your approval." },
-    { icon: PackageCheck, step: "05", title: "Mass Production", desc: "Full production runs with inline quality checks at every stage." },
-    { icon: Plane, step: "06", title: "Shipment", desc: "Export-ready packaging, documentation, and freight coordination handled." },
-  ];
+  const { t } = useLanguage();
+  const steps = [0, 1, 2, 3, 4, 5].map((i) => ({
+    icon: [MessageCircle, Ruler, Gauge, Timer, PackageCheck, Plane][i]!,
+    step: t(`sections.processFlow.steps.${i}.step`),
+    title: t(`sections.processFlow.steps.${i}.title`),
+    desc: t(`sections.processFlow.steps.${i}.desc`),
+  }));
 
   return (
     <AnimatedSection className="relative bg-zinc-950/40 py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-14 text-center">
-          <FadeUp><SectionLabel>How It Works</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.processFlow.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mx-auto max-w-xl">
-              The Order Process
+              {t("sections.processFlow.heading")}
             </SectionHeading>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-zinc-400">
-              A straightforward, professional workflow from first contact to delivery.
+              {t("sections.processFlow.sub")}
             </p>
           </FadeUp>
         </div>
@@ -439,7 +409,7 @@ export function ProcessFlow() {
                     <Icon className="h-5 w-5 text-red-400" />
                   </div>
                   <p className="mb-1 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                    Step {s.step}
+                    {t("sections.processFlow.stepWord")} {s.step}
                   </p>
                   <h3 className="mb-2 text-base font-bold uppercase tracking-wide text-white">
                     {s.title}
@@ -453,7 +423,7 @@ export function ProcessFlow() {
         <FadeUp delay={0.5} className="mt-10 text-center">
           <Link href="/process">
             <Button variant="outline" className="group border-white/20 hover:border-white/40">
-              Full Process Details
+              {t("sections.processFlow.cta")}
               <ArrowRight className="h-4 w-4 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" />
             </Button>
           </Link>
@@ -465,41 +435,36 @@ export function ProcessFlow() {
 
 // ─── 7. MOQ & Payment Policy ──────────────────────────────────────────────────
 export function MOQSection() {
-  const policies = [
-    { label: "Minimum Order Quantity", value: "50 Pieces", note: "Per style, per color" },
-    { label: "Payment Terms", value: "Advance Basis", note: "Agreed % before production" },
-    { label: "Sample Lead Time", value: "5–7 Days", note: "Pre-production samples" },
-    { label: "Production Lead Time", value: "15–25 Days", note: "After sample approval" },
-  ];
+  const { t } = useLanguage();
+  const policies = [0, 1, 2, 3].map((i) => ({
+    label: t(`sections.moq.policies.${i}.label`),
+    value: t(`sections.moq.policies.${i}.value`),
+    note: t(`sections.moq.policies.${i}.note`),
+  }));
 
   return (
     <AnimatedSection className="relative mx-auto max-w-7xl px-6 py-24">
       <div className="section-glow -right-10 top-10" />
       <div className="grid items-center gap-16 lg:grid-cols-2">
         <div>
-          <FadeUp><SectionLabel>MOQ & Payment</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.moq.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mb-6">
-              Clear Terms, No Surprises
+              {t("sections.moq.heading")}
             </SectionHeading>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p className="mb-4 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              We operate on a straightforward bulk order model. Our minimum
-              order quantity of 50 pieces per style makes us accessible to
-              growing brands while our production capacity handles large-scale
-              orders with equal efficiency.
+              {t("sections.moq.p1")}
             </p>
             <p className="mb-8 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              All orders are processed on an advance payment basis. We discuss
-              requirements fully before any commitment — no pressure, no
-              ambiguity.
+              {t("sections.moq.p2")}
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
             <Link href="/terms">
               <Button variant="outline" className="group border-white/20 hover:border-white/40">
-                View Full Policy
+                {t("sections.moq.cta")}
                 <ArrowRight className="h-4 w-4 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" />
               </Button>
             </Link>
@@ -526,30 +491,28 @@ export function MOQSection() {
 
 // ─── 8. Quality & Manufacturing Standards ─────────────────────────────────────
 export function QualitySection() {
-  const standards = [
-    { icon: ShieldCheck, title: "ISO 9001 Certified", desc: "Our quality management system meets international standards for consistent, auditable production." },
-    { icon: Gauge, title: "Inline Quality Control", desc: "QC checks at cutting, sewing, finishing, and packing stages — defects caught before they reach you." },
-    { icon: Ruler, title: "Precision Pattern Making", desc: "Graded patterns developed in-house for accurate sizing across all garment categories." },
-    { icon: Truck, title: "Export-Ready Packaging", desc: "Poly-bagged, carton-packed, and labeled to international retail and wholesale standards." },
-  ];
+  const { t } = useLanguage();
+  const standards = [0, 1, 2, 3].map((i) => ({
+    icon: [ShieldCheck, Gauge, Ruler, Truck][i]!,
+    title: t(`sections.quality.standards.${i}.title`),
+    desc: t(`sections.quality.standards.${i}.desc`),
+  }));
 
   return (
     <AnimatedSection className="relative bg-zinc-950/40 py-24" direction="left">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-14 grid gap-8 lg:grid-cols-2 lg:items-end">
           <div>
-            <FadeUp><SectionLabel>Quality Standards</SectionLabel></FadeUp>
+            <FadeUp><SectionLabel>{t("sections.quality.label")}</SectionLabel></FadeUp>
             <FadeUp delay={0.1}>
               <SectionHeading>
-                Manufacturing You Can Rely On
+                {t("sections.quality.heading")}
               </SectionHeading>
             </FadeUp>
           </div>
           <FadeUp delay={0.2}>
             <p className="text-[1.0625rem] leading-[1.75] text-zinc-400">
-              Every garment that leaves our facility has passed through a
-              structured quality process. We don't ship product we wouldn't
-              be proud to put our name on.
+              {t("sections.quality.intro")}
             </p>
           </FadeUp>
         </div>
@@ -578,14 +541,8 @@ export function QualitySection() {
 
 // ─── 9. Global Buyer Trust ────────────────────────────────────────────────────
 export function BuyerTrustSection() {
-  const commitments = [
-    "We respond to every inquiry within 24 hours.",
-    "Samples are prepared before bulk production begins.",
-    "You approve before we produce — no surprises.",
-    "Export documentation handled professionally.",
-    "Direct communication with our production team.",
-    "Long-term partnerships built on consistency.",
-  ];
+  const { t } = useLanguage();
+  const commitments = [0, 1, 2, 3, 4, 5].map((i) => t(`sections.buyerTrust.commitments.${i}`));
 
   return (
     <AnimatedSection className="relative mx-auto max-w-7xl px-6 py-24">
@@ -594,23 +551,18 @@ export function BuyerTrustSection() {
         <div className="grid lg:grid-cols-2">
           {/* Left */}
           <div className="border-b border-white/[0.07] p-10 lg:border-b-0 lg:border-r lg:p-14">
-            <FadeUp><SectionLabel>International Buyers</SectionLabel></FadeUp>
+            <FadeUp><SectionLabel>{t("sections.buyerTrust.label")}</SectionLabel></FadeUp>
             <FadeUp delay={0.1}>
               <SectionHeading className="mb-6">
-                Built For Global Trade
+                {t("sections.buyerTrust.heading")}
               </SectionHeading>
             </FadeUp>
             <FadeUp delay={0.2}>
               <p className="mb-6 text-[1.0625rem] leading-[1.75] text-zinc-400">
-                We work with buyers across Europe, North America, the Middle
-                East, Africa, and Asia. Our export experience means we
-                understand what international buyers need — reliable
-                communication, consistent quality, and professional handling.
+                {t("sections.buyerTrust.p1")}
               </p>
               <p className="text-[1.0625rem] leading-[1.75] text-zinc-400">
-                Whether you're placing your first order or scaling an existing
-                relationship, we operate with the same level of professionalism
-                at every stage.
+                {t("sections.buyerTrust.p2")}
               </p>
             </FadeUp>
           </div>
@@ -618,7 +570,7 @@ export function BuyerTrustSection() {
           <div className="p-10 lg:p-14">
             <FadeUp delay={0.1}>
               <h3 className="mb-7 text-sm font-bold uppercase tracking-[0.2em] text-zinc-300">
-                Our Commitments
+                {t("sections.buyerTrust.commitmentsTitle")}
               </h3>
             </FadeUp>
             <ul className="space-y-4">
@@ -640,35 +592,22 @@ export function BuyerTrustSection() {
 
 // ─── 10. Testimonials / Buyer Assurance ───────────────────────────────────────
 export function TestimonialsSection() {
-  const quotes = [
-    {
-      quote: "Consistent quality across every bulk order. Sampling was fast, communication was clear, and delivery was on schedule. Exactly what we needed from a manufacturing partner.",
-      name: "Bulk Buyer",
-      region: "United Kingdom",
-      initial: "B",
-    },
-    {
-      quote: "We've worked with several manufacturers. Megacore stands out for their professionalism and attention to detail. Our custom jerseys were exactly as approved in sampling.",
-      name: "Sports Brand",
-      region: "Germany",
-      initial: "S",
-    },
-    {
-      quote: "The OEM process was smooth from start to finish. Custom packaging, private labels, and the quality was export-grade. We'll be placing repeat orders.",
-      name: "Distributor",
-      region: "UAE",
-      initial: "D",
-    },
-  ];
+  const { t } = useLanguage();
+  const quotes = [0, 1, 2].map((i) => ({
+    quote: t(`sections.testimonials.quotes.${i}.quote`),
+    name: t(`sections.testimonials.quotes.${i}.name`),
+    region: t(`sections.testimonials.quotes.${i}.region`),
+    initial: t(`sections.testimonials.quotes.${i}.initial`),
+  }));
 
   return (
     <AnimatedSection className="relative bg-zinc-950/40 py-24" direction="right">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-14 text-center">
-          <FadeUp><SectionLabel>Buyer Confidence</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.testimonials.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mx-auto max-w-xl">
-              What Our Buyers Say
+              {t("sections.testimonials.heading")}
             </SectionHeading>
           </FadeUp>
         </div>
@@ -704,32 +643,11 @@ export function TestimonialsSection() {
 
 // ─── 11. FAQ Preview ──────────────────────────────────────────────────────────
 export function FAQSection() {
-  const faqs = [
-    {
-      q: "What is the minimum order quantity?",
-      a: "Our MOQ is 50 pieces per style, per color. This applies to all product categories including custom OEM orders.",
-    },
-    {
-      q: "Do you offer custom manufacturing and private labeling?",
-      a: "Yes. We offer full OEM services including custom logos, private labels, custom fabrics, colorways, sizing, and packaging.",
-    },
-    {
-      q: "How does the inquiry process work?",
-      a: "Send us your requirements via WhatsApp or email. We'll review your specs, provide pricing, and confirm lead times before any commitment.",
-    },
-    {
-      q: "Is advance payment required?",
-      a: "Yes, we operate on an advance payment basis. The exact terms are agreed upon before production begins.",
-    },
-    {
-      q: "Can I discuss requirements before placing an order?",
-      a: "Absolutely. We encourage full discussion of your requirements before any order is placed. There's no obligation to commit until you're satisfied.",
-    },
-    {
-      q: "What countries do you export to?",
-      a: "We export globally — including Europe, North America, the Middle East, Africa, and Asia. We handle all export documentation.",
-    },
-  ];
+  const { t } = useLanguage();
+  const faqs = [0, 1, 2, 3, 4, 5].map((i) => ({
+    q: t(`sections.faq.items.${i}.q`),
+    a: t(`sections.faq.items.${i}.a`),
+  }));
 
   function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
     const [open, setOpen] = useState(false);
@@ -768,22 +686,21 @@ export function FAQSection() {
     <AnimatedSection className="relative mx-auto max-w-7xl px-6 py-24">
       <div className="grid gap-16 lg:grid-cols-[1fr_1.4fr]">
         <div>
-          <FadeUp><SectionLabel>FAQ</SectionLabel></FadeUp>
+          <FadeUp><SectionLabel>{t("sections.faq.label")}</SectionLabel></FadeUp>
           <FadeUp delay={0.1}>
             <SectionHeading className="mb-6">
-              Common Questions
+              {t("sections.faq.heading")}
             </SectionHeading>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p className="mb-8 text-[1.0625rem] leading-[1.75] text-zinc-400">
-              Everything you need to know before placing your first order with
-              Megacore International.
+              {t("sections.faq.intro")}
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
             <Link href="/contact">
               <Button variant="outline" className="group border-white/20 hover:border-white/40">
-                Ask a Question
+                {t("sections.faq.cta")}
                 <ArrowRight className="h-4 w-4 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" />
               </Button>
             </Link>
@@ -801,22 +718,22 @@ export function FAQSection() {
 
 // ─── 12. Contact Preview ──────────────────────────────────────────────────────
 export function ContactPreview() {
+  const { t } = useLanguage();
+  const placeholders = [0, 1, 2].map((i) => t(`sections.contactPreview.placeholders.${i}`));
   return (
     <AnimatedSection className="relative bg-zinc-950/40 py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <FadeUp><SectionLabel>Get In Touch</SectionLabel></FadeUp>
+            <FadeUp><SectionLabel>{t("sections.contactPreview.label")}</SectionLabel></FadeUp>
             <FadeUp delay={0.1}>
               <SectionHeading className="mb-6">
-                Ready To Start Your Order?
+                {t("sections.contactPreview.heading")}
               </SectionHeading>
             </FadeUp>
             <FadeUp delay={0.2}>
               <p className="mb-8 text-[1.0625rem] leading-[1.75] text-zinc-400">
-                Send us your requirements and we'll respond within 24 hours.
-                No commitment required — just a conversation about what you
-                need and how we can deliver it.
+                {t("sections.contactPreview.p1")}
               </p>
             </FadeUp>
             <FadeUp delay={0.3} className="flex flex-wrap gap-3">
@@ -829,7 +746,7 @@ export function ContactPreview() {
                 className="inline-flex items-center gap-2.5 rounded-full bg-[#25D366] px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(37,211,102,0.2)] transition-shadow hover:shadow-[0_0_28px_rgba(37,211,102,0.35)]"
               >
                 <MessageCircle className="h-4 w-4" />
-                WhatsApp Us
+                {t("sections.contactPreview.wa")}
               </motion.a>
               <motion.a
                 href="mailto:info@megacoreinternational.com"
@@ -837,17 +754,17 @@ export function ContactPreview() {
                 whileTap={{ scale: 0.97 }}
                 className="inline-flex items-center gap-2.5 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-zinc-300 transition-colors hover:border-white/40 hover:text-white"
               >
-                Send Email
+                {t("sections.contactPreview.email")}
               </motion.a>
             </FadeUp>
           </div>
           <FadeUp delay={0.2}>
             <div className="rounded-2xl border border-white/[0.07] bg-zinc-900/60 p-8">
               <h3 className="mb-6 text-sm font-bold uppercase tracking-[0.2em] text-zinc-300">
-                Quick Inquiry
+                {t("sections.contactPreview.formTitle")}
               </h3>
               <div className="space-y-4">
-                {["Your Name", "Company / Brand", "Product Requirements"].map((placeholder, i) => (
+                {placeholders.map((placeholder, i) => (
                   <div key={i}>
                     {i < 2 ? (
                       <input
@@ -869,7 +786,7 @@ export function ContactPreview() {
                 <Link href="/contact">
                   <Button className="group relative w-full overflow-hidden">
                     <span className="relative z-10 flex items-center justify-center gap-2">
-                      Send Inquiry
+                      {t("sections.contactPreview.cta")}
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                     </span>
                     <span aria-hidden className="absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/[0.1] to-transparent transition-transform duration-500 group-hover:translate-x-full" />
@@ -886,6 +803,7 @@ export function ContactPreview() {
 
 // ─── 13. Final CTA ────────────────────────────────────────────────────────────
 export function CTASection() {
+  const { t } = useLanguage();
   return (
     <AnimatedSection className="mx-auto max-w-7xl px-6 pb-28 pt-8">
       <FadeUp>
@@ -898,16 +816,14 @@ export function CTASection() {
           <div className="relative">
             <span className="mb-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-red-400">
               <span className="h-px w-6 bg-red-500" />
-              Start Today
+              {t("sections.cta.label")}
               <span className="h-px w-6 bg-red-500" />
             </span>
             <h2 className="mx-auto mb-5 max-w-3xl text-3xl font-black uppercase leading-[1.05] text-white md:text-5xl">
-              Launch Your Next Collection With Megacore
+              {t("sections.cta.heading")}
             </h2>
             <p className="mx-auto mb-10 max-w-xl text-[1.0625rem] leading-[1.75] text-zinc-400">
-              From concept to export-ready production. Professional
-              manufacturing, direct communication, and consistent quality
-              — every order, every time.
+              {t("sections.cta.p1")}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <motion.div
@@ -918,7 +834,7 @@ export function CTASection() {
                 <Link href="/contact">
                   <Button size="lg" className="group relative overflow-hidden rounded-full px-8">
                     <span className="relative z-10 flex items-center gap-2.5">
-                      Request a Quote
+                      {t("sections.cta.primary")}
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                     </span>
                     <span aria-hidden className="absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent transition-transform duration-500 group-hover:translate-x-full" />
@@ -934,7 +850,7 @@ export function CTASection() {
                 className="inline-flex items-center gap-2.5 rounded-full border border-white/20 px-8 py-3 text-sm font-semibold text-zinc-300 transition-colors hover:border-white/40 hover:text-white"
               >
                 <MessageCircle className="h-4 w-4" />
-                WhatsApp
+                {t("sections.cta.wa")}
               </motion.a>
             </div>
           </div>

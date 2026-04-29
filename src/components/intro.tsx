@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/context/language-context";
 
 const SLAM: [number, number, number, number]   = [0.22, 1.2, 0.36, 1];
 const SMOOTH: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -201,6 +202,7 @@ function LogoMark() {
 // 10.0s  done
 
 export function Intro({ onComplete }: { onComplete: () => void }) {
+  const { t } = useLanguage();
   const [phase, setPhase] = useState<
     "black" | "fly" | "collide" | "arrange" | "brand" | "fadeout" | "done"
   >("black");
@@ -323,7 +325,7 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
                     transition={{ duration: 0.6, ease: SMOOTH, delay: 0.5 }}
                     className="text-[9px] uppercase tracking-[0.18em] text-zinc-400 sm:text-[11px] sm:tracking-[0.3em]"
                   >
-                    Sportswear Manufacturer &amp; Exporter
+                    {t("intro.tagline")}
                   </motion.span>
 
                   {/* Thin red line */}

@@ -18,6 +18,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -59,42 +60,40 @@ const IMAGES = {
 };
 
 export default function AboutPage() {
+  const { t } = useLanguage();
   return (
     <main className="bg-black">
 
       {/* ── 1. Hero ── */}
       <section className="relative isolate relative isolate min-h-[60vh] overflow-hidden sm:min-h-[70vh]">
         <div className="absolute inset-0">
-          <Image src={IMAGES.hero} alt="Megacore manufacturing facility" fill className="object-cover opacity-25" priority />
+          <Image src={IMAGES.hero} alt={t("about.hero.altFacility")} fill className="object-cover opacity-25" priority />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(239,68,68,0.18),transparent_60%)]" />
         </div>
         <div className="relative mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center px-6 pb-12 pt-32 sm:pb-20 sm:pt-40">
           <FadeUp>
-            <SectionLabel>About Megacore International</SectionLabel>
+            <SectionLabel>{t("about.hero.label")}</SectionLabel>
           </FadeUp>
           <FadeUp delay={0.1}>
             <h1 className="mb-6 max-w-4xl text-3xl font-black uppercase leading-[0.92] tracking-tight text-white sm:text-5xl md:text-7xl">
-              Engineered In Industry,{" "}
+              {t("about.hero.title1")}{" "}
               <span className="bg-gradient-to-r from-red-400 to-red-200 bg-clip-text text-transparent">
-                Driven By Sport
+                {t("about.hero.title2")}
               </span>
             </h1>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p className="max-w-2xl text-lg leading-relaxed text-zinc-300">
-              Megacore International is a Pakistan-based sportswear manufacturer and exporter
-              serving brands, distributors, and bulk buyers across Europe, North America,
-              the Middle East, and beyond. We combine factory-scale execution with a
-              performance-first product mindset.
+              {t("about.hero.intro")}
             </p>
           </FadeUp>
           <FadeUp delay={0.3} className="mt-8 flex flex-wrap gap-4">
             <Link href="/contact" className="inline-flex items-center gap-2 rounded-full bg-red-600 px-7 py-3 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-red-500">
-              Start a Discussion <ArrowRight className="h-4 w-4" />
+              {t("about.hero.ctaDiscuss")} <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/products" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3 text-sm font-semibold uppercase tracking-widest text-zinc-300 transition-colors hover:border-white/40 hover:text-white">
-              View Products
+              {t("about.hero.ctaProducts")}
             </Link>
           </FadeUp>
         </div>
@@ -104,12 +103,10 @@ export default function AboutPage() {
       <section className="border-y border-white/[0.06] bg-zinc-950/60">
         <div className="mx-auto max-w-7xl px-6 py-12">
           <div className="grid grid-cols-2 gap-px md:grid-cols-4">
-            {[
-              { v: "280K+", l: "Units / Month" },
-              { v: "42+", l: "Export Countries" },
-              { v: "ISO 9001", l: "Certified" },
-              { v: "50 pcs", l: "Min. Order Qty" },
-            ].map((s, i) => (
+            {[0, 1, 2, 3].map((i) => ({
+              v: t(`about.stats.${i}.v`),
+              l: t(`about.stats.${i}.l`),
+            })).map((s, i) => (
               <FadeUp key={s.l} delay={i * 0.07}>
                 <div className="flex flex-col items-center gap-1 py-8 text-center">
                   <span className="text-3xl font-black text-white md:text-4xl">{s.v}</span>

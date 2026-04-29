@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "@/components/providers";
 import { ConditionalShell } from "@/components/conditional-shell";
 
 export const metadata: Metadata = {
@@ -17,9 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <ConditionalShell>{children}</ConditionalShell>
+        <Providers>
+          <ConditionalShell>{children}</ConditionalShell>
+        </Providers>
       </body>
     </html>
   );

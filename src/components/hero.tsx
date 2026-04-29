@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -20,6 +20,7 @@ import {
   Factory,
 } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/context/language-context";
 
 const E: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const E_IN: [number, number, number, number] = [0.4, 0, 1, 1];
@@ -73,78 +74,66 @@ function HeroClothingBg({ slideId }: { slideId: number }) {
   );
 }
 
-const SLIDES = [
-  {
-    id: 0,
-    eyebrow: "Sportswear Manufacturer & Exporter",
-    headline: ["Built For", "Performance"],
-    accent: "Performance",
-    sub: "Megacore International engineers high-performance apparel through vertically integrated manufacturing and logistics-ready export delivery across global markets.",
-    cta: { label: "Start Production", href: "/contact" },
-    ctaSecondary: { label: "View Products", href: "/products" },
-    tag: "Est. Pakistan",
-    stats: [{ v: "180+", l: "Markets" }, { v: "12M+", l: "Units / Year" }, { v: "50 pcs", l: "Min. Order" }],
-    accentColor: "from-red-500 to-red-300",
-    panelGradient: "from-red-950/40 via-zinc-950 to-black",
-    icon: Globe2,
-  },
-  {
-    id: 1,
-    eyebrow: "Product Catalog",
-    headline: ["Premium", "Sportswear"],
-    accent: "Sportswear",
-    sub: "Jerseys, tracksuits, gym wear, hoodies, compression sets, and accessories — manufactured to international export standards with full customization.",
-    cta: { label: "Explore Products", href: "/products" },
-    ctaSecondary: { label: "View Catalog", href: "/products" },
-    tag: "150+ SKUs",
-    stats: [{ v: "25+", l: "Categories" }, { v: "150+", l: "Products" }, { v: "Custom", l: "Sizing" }],
-    accentColor: "from-orange-400 to-red-400",
-    panelGradient: "from-orange-950/30 via-zinc-950 to-black",
-    icon: Package,
-  },
-  {
-    id: 2,
-    eyebrow: "OEM & Private Label",
-    headline: ["Custom", "Manufacturing"],
-    accent: "Manufacturing",
-    sub: "Your brand, our production. Custom logos, private labels, unique fabrics, colorways, and packaging — built to your exact specification.",
-    cta: { label: "Explore OEM", href: "/capabilities" },
-    ctaSecondary: { label: "Request Quote", href: "/contact" },
-    tag: "Full OEM",
-    stats: [{ v: "100%", l: "Custom" }, { v: "OEM", l: "Available" }, { v: "Private", l: "Label" }],
-    accentColor: "from-red-400 to-rose-300",
-    panelGradient: "from-rose-950/30 via-zinc-950 to-black",
-    icon: Factory,
-  },
-  {
-    id: 3,
-    eyebrow: "MOQ & Order Process",
-    headline: ["Simple", "Bulk Orders"],
-    accent: "Bulk Orders",
-    sub: "Start with just 50 pieces. Send inquiry → confirm specs → advance payment → sampling → production → shipment.",
-    cta: { label: "View Process", href: "/process" },
-    ctaSecondary: { label: "Start Order", href: "/contact" },
-    tag: "MOQ 50 pcs",
-    stats: [{ v: "50 pcs", l: "Min. Order" }, { v: "5–7d", l: "Sampling" }, { v: "15–25d", l: "Production" }],
-    accentColor: "from-red-500 to-red-400",
-    panelGradient: "from-red-950/35 via-zinc-950 to-black",
-    icon: Zap,
-  },
-  {
-    id: 4,
-    eyebrow: "Global Export",
-    headline: ["Export Ready", "Worldwide"],
-    accent: "Worldwide",
-    sub: "Serving buyers across Europe, North America, the Middle East, Africa, and Asia. ISO 9001 certified. Export documentation and professional handling.",
-    cta: { label: "Contact Us", href: "/contact" },
-    ctaSecondary: { label: "Our Process", href: "/process" },
-    tag: "ISO 9001",
-    stats: [{ v: "42+", l: "Countries" }, { v: "ISO", l: "9001 Cert." }, { v: "98.4%", l: "On-Time" }],
-    accentColor: "from-red-300 to-white",
-    panelGradient: "from-zinc-900/60 via-zinc-950 to-black",
-    icon: ShieldCheck,
-  },
-];
+type SlideDef = {
+  id: number;
+  eyebrow: string;
+  headline: [string, string];
+  accent: string;
+  sub: string;
+  cta: { label: string; href: string };
+  ctaSecondary: { label: string; href: string };
+  tag: string;
+  stats: { v: string; l: string }[];
+  accentColor: string;
+  panelGradient: string;
+  icon: typeof Globe2;
+};
+
+function buildSlides(t: (k: string) => string): SlideDef[] {
+  const keys = ["0", "1", "2", "3", "4"] as const;
+  return keys.map((k, id) => {
+    const p = `hero.slides.${id}`;
+    const h0 = t(`${p}.headline0`);
+    const h1 = t(`${p}.headline1`);
+    const accent = t(`${p}.accent`);
+    return {
+      id,
+      eyebrow: t(`${p}.eyebrow`),
+      headline: [h0, h1],
+      accent,
+      sub: t(`${p}.sub`),
+      cta: {
+        label: t(`${p}.cta`),
+        href: ["/contact", "/products", "/capabilities", "/process", "/contact"][id] ?? "/contact",
+      },
+      ctaSecondary: {
+        label: t(`${p}.ctaSecondary`),
+        href: ["/products", "/products", "/contact", "/contact", "/process"][id] ?? "/products",
+      },
+      tag: t(`${p}.tag`),
+      stats: [
+        { v: t(`${p}.stat0v`), l: t(`${p}.stat0l`) },
+        { v: t(`${p}.stat1v`), l: t(`${p}.stat1l`) },
+        { v: t(`${p}.stat2v`), l: t(`${p}.stat2l`) },
+      ],
+      accentColor: [
+        "from-red-500 to-red-300",
+        "from-orange-400 to-red-400",
+        "from-red-400 to-rose-300",
+        "from-red-500 to-red-400",
+        "from-red-300 to-white",
+      ][id]!,
+      panelGradient: [
+        "from-red-950/40 via-zinc-950 to-black",
+        "from-orange-950/30 via-zinc-950 to-black",
+        "from-rose-950/30 via-zinc-950 to-black",
+        "from-red-950/35 via-zinc-950 to-black",
+        "from-zinc-900/60 via-zinc-950 to-black",
+      ][id]!,
+      icon: [Globe2, Package, Factory, Zap, ShieldCheck][id]!,
+    };
+  });
+}
 
 function Orb({ className, dur, delay }: { className: string; dur: number; delay: number }) {
   return (
@@ -155,7 +144,7 @@ function Orb({ className, dur, delay }: { className: string; dur: number; delay:
   );
 }
 
-function ScrollCue() {
+function ScrollCue({ label }: { label: string }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
       transition={{ delay: 3.2, duration: 1 }}
@@ -167,12 +156,12 @@ function ScrollCue() {
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
-      <span className="text-[8px] uppercase tracking-[0.35em] text-zinc-600">Scroll</span>
+      <span className="text-[8px] uppercase tracking-[0.35em] text-zinc-600">{label}</span>
     </motion.div>
   );
 }
 
-function SlideContent({ slide, direction }: { slide: typeof SLIDES[0]; direction: number }) {
+function SlideContent({ slide, direction }: { slide: SlideDef; direction: number }) {
   const Icon = slide.icon;
   const variants = {
     enter: { opacity: 0, x: direction > 0 ? 60 : -60, filter: "blur(12px)" },
@@ -265,6 +254,8 @@ function SlideContent({ slide, direction }: { slide: typeof SLIDES[0]; direction
 }
 
 export function Hero() {
+  const { t } = useLanguage();
+  const slides = useMemo(() => buildSlides(t), [t]);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -277,8 +268,8 @@ export function Hero() {
   const panelOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   const go = useCallback((idx: number, dir: number) => { setDirection(dir); setCurrent(idx); }, []);
-  const next = useCallback(() => go((current + 1) % SLIDES.length, 1), [current, go]);
-  const prev = useCallback(() => go((current - 1 + SLIDES.length) % SLIDES.length, -1), [current, go]);
+  const next = useCallback(() => go((current + 1) % slides.length, 1), [current, go, slides.length]);
+  const prev = useCallback(() => go((current - 1 + slides.length) % slides.length, -1), [current, go, slides.length]);
 
   useEffect(() => {
     if (paused) return;
@@ -286,7 +277,7 @@ export function Hero() {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, [next, paused]);
 
-  const slide = SLIDES[current];
+  const slide = slides[current];
 
   return (
     <section ref={sectionRef}
@@ -316,7 +307,7 @@ export function Hero() {
           className="flex items-center justify-center gap-3 px-4 pb-4 pt-20 sm:pt-24 lg:pt-32"
         >
           <span className="h-px w-8 bg-red-500/60" />
-          <span className="text-[10px] uppercase tracking-[0.32em] text-red-300/70">Megacore International</span>
+          <span className="text-[10px] uppercase tracking-[0.32em] text-red-300/70">{t("hero.brand")}</span>
           <span className="h-px w-8 bg-red-500/60" />
         </motion.div>
 
@@ -363,9 +354,9 @@ export function Hero() {
             {/* Bottom bar */}
             <div className="relative flex items-center justify-between border-t border-white/[0.06] px-4 py-3 sm:px-8 sm:py-4">
               <div className="flex items-center gap-2">
-                {SLIDES.map((s, i) => (
+                {slides.map((s, i) => (
                   <button key={s.id} onClick={() => go(i, i > current ? 1 : -1)}
-                    suppressHydrationWarning className="group relative flex items-center" aria-label={`Slide ${i + 1}`}
+                    suppressHydrationWarning className="group relative flex items-center" aria-label={t("hero.slide", { n: String(i + 1) })}
                   >
                     <motion.div
                       animate={{ width: i === current ? 24 : 6, backgroundColor: i === current ? "rgb(239,68,68)" : "rgba(255,255,255,0.2)" }}
@@ -375,15 +366,15 @@ export function Hero() {
                 ))}
               </div>
               <span className="text-[10px] uppercase tracking-[0.25em] text-zinc-600">
-                {String(current + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
+                {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
               </span>
               <div className="flex items-center gap-2">
-                <button onClick={prev} suppressHydrationWarning aria-label="Previous"
+                <button onClick={prev} suppressHydrationWarning aria-label={t("hero.prev")}
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.1] text-zinc-400 hover:border-white/25 hover:text-white"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
-                <button onClick={next} suppressHydrationWarning aria-label="Next"
+                <button onClick={next} suppressHydrationWarning aria-label={t("hero.next")}
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.1] text-zinc-400 hover:border-white/25 hover:text-white"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -429,20 +420,20 @@ export function Hero() {
           className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 pb-10 pt-6 sm:gap-x-8 sm:pb-16"
         >
           {[
-            { icon: ShieldCheck, label: "ISO 9001 Certified" },
-            { icon: Globe2, label: "180+ Global Markets" },
-            { icon: Package, label: "MOQ from 50 pcs" },
-            { icon: Factory, label: "Vertically Integrated" },
-          ].map(({ icon: Icon, label }) => (
-            <div key={label} className="flex items-center gap-2 text-zinc-500">
+            { icon: ShieldCheck, labelKey: "hero.trustIso" as const },
+            { icon: Globe2, labelKey: "hero.trustMarkets" as const },
+            { icon: Package, labelKey: "hero.trustMoq" as const },
+            { icon: Factory, labelKey: "hero.trustVertical" as const },
+          ].map(({ icon: Icon, labelKey }) => (
+            <div key={labelKey} className="flex items-center gap-2 text-zinc-500">
               <Icon className="h-3.5 w-3.5 text-red-500/60" />
-              <span className="text-[10px] uppercase tracking-[0.15em] sm:text-[11px] sm:tracking-[0.18em]">{label}</span>
+              <span className="text-[10px] uppercase tracking-[0.15em] sm:text-[11px] sm:tracking-[0.18em]">{t(labelKey)}</span>
             </div>
           ))}
         </motion.div>
       </motion.div>
 
-      <ScrollCue />
+      <ScrollCue label={t("hero.scroll")} />
       <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black via-black/50 to-transparent" />
     </section>
   );

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Trash2, MessageCircle, ArrowRight, ShoppingBag, Lock, X } from "lucide-react";
 import { useAuthStore, useWishlistStore, generateWhatsAppURL, WishlistItem } from "@/lib/store";
 import { AuthModal } from "@/components/auth-modal";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/language-context";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -20,6 +21,7 @@ function BuyerDetailsModal({
   onClose: () => void;
   onProceed: (details: { name: string; company: string; email: string; country: string }) => void;
 }) {
+  const { t } = useLanguage();
   const user = useAuthStore((s) => s.user);
   const [form, setForm] = useState({
     name: user?.name || "",
@@ -59,10 +61,10 @@ function BuyerDetailsModal({
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-black uppercase tracking-wide text-white">
-                    Your Details
+                    {t("wishlist.yourDetails")}
                   </h2>
                   <p className="mt-0.5 text-xs text-zinc-500">
-                    Optional — included in your WhatsApp message
+                    {t("wishlist.detailsHint")}
                   </p>
                 </div>
                 <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-400 hover:text-white">
@@ -71,26 +73,26 @@ function BuyerDetailsModal({
               </div>
 
               <div className="space-y-3">
-                <input suppressHydrationWarning placeholder="Full Name" value={form.name} onChange={(e) => set("name", e.target.value)} className={inputCls} />
-                <input suppressHydrationWarning placeholder="Company / Brand" value={form.company} onChange={(e) => set("company", e.target.value)} className={inputCls} />
-                <input suppressHydrationWarning type="email" placeholder="Email Address" value={form.email} onChange={(e) => set("email", e.target.value)} className={inputCls} />
-                <input suppressHydrationWarning placeholder="Country" value={form.country} onChange={(e) => set("country", e.target.value)} className={inputCls} />
+                <input suppressHydrationWarning placeholder={t("wishlist.fullNamePh")} value={form.name} onChange={(e) => set("name", e.target.value)} className={inputCls} />
+                <input suppressHydrationWarning placeholder={t("auth.companyPh")} value={form.company} onChange={(e) => set("company", e.target.value)} className={inputCls} />
+                <input suppressHydrationWarning type="email" placeholder={t("wishlist.emailAddrPh")} value={form.email} onChange={(e) => set("email", e.target.value)} className={inputCls} />
+                <input suppressHydrationWarning placeholder={t("auth.countryPh")} value={form.country} onChange={(e) => set("country", e.target.value)} className={inputCls} />
               </div>
 
               <div className="mt-6 flex gap-3">
                 <button onClick={onClose} className="flex-1 rounded-lg border border-white/[0.08] py-3 text-sm text-zinc-400 transition-colors hover:text-white">
-                  Skip
+                  {t("wishlist.skip")}
                 </button>
                 <button
                   onClick={() => onProceed(form)}
                   className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#25D366] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1fba58]"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  Open WhatsApp
+                  {t("wishlist.openWhatsApp")}
                 </button>
               </div>
               <p className="mt-2 text-center text-[10px] text-zinc-500">
-                WhatsApp opens with your message pre-filled — tap <strong className="text-zinc-400">Send</strong> to submit
+                {t("wishlist.waPrefillHint", { send: t("common.send") })}
               </p>
             </div>
           </motion.div>
@@ -102,6 +104,7 @@ function BuyerDetailsModal({
 
 // ─── Wishlist item row ────────────────────────────────────────────────────────
 function WishlistRow({ item }: { item: WishlistItem }) {
+  const { t } = useLanguage();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { removeItem, updateQuantity, updateNotes } = useWishlistStore();
 
@@ -145,7 +148,7 @@ function WishlistRow({ item }: { item: WishlistItem }) {
           {/* Price */}
           {isAuthenticated && (
             <p className="text-xs text-zinc-400">
-              {item.price ? `USD ${item.price.toFixed(2)} / pc` : "Contact for price"}
+              {item.price ? t("wishlist.usdPerPc", { price: item.price.toFixed(2) }) : t("wishlist.contactForPrice")}
             </p>
           )}
         </div>
@@ -155,7 +158,7 @@ function WishlistRow({ item }: { item: WishlistItem }) {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
           <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-            Quantity (min {item.moq} pcs)
+            {t("wishlist.quantityMin", { moq: String(item.moq) })}
           </label>
           <input
             suppressHydrationWarning
@@ -168,12 +171,12 @@ function WishlistRow({ item }: { item: WishlistItem }) {
         </div>
         <div>
           <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-            Customization Notes
+            {t("wishlist.customizationNotes")}
           </label>
           <input
             suppressHydrationWarning
             type="text"
-            placeholder="Colors, logo, size breakdown..."
+            placeholder={t("wishlist.notesPlaceholder")}
             value={item.notes}
             onChange={(e) => updateNotes(item.productId, e.target.value)}
             className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-red-500/40"
@@ -186,19 +189,42 @@ function WishlistRow({ item }: { item: WishlistItem }) {
 
 // ─── Main wishlist page ───────────────────────────────────────────────────────
 export default function WishlistPage() {
+  const { t } = useLanguage();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { items, clearWishlist } = useWishlistStore();
   const [authOpen, setAuthOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
+  const waLabels = useMemo(
+    () => ({
+      greeting: t("whatsapp.wishlistGreeting"),
+      fromWebsite: t("whatsapp.wishlistFrom"),
+      buyerHeading: t("whatsapp.wishlistBuyer"),
+      namePrefix: t("whatsapp.wishlistName"),
+      companyPrefix: t("whatsapp.wishlistCompany"),
+      emailPrefix: t("whatsapp.wishlistEmail"),
+      countryPrefix: t("whatsapp.wishlistCountry"),
+      introLine: t("whatsapp.wishlistIntro"),
+      productPrefix: t("whatsapp.wishlistLineProduct"),
+      codePrefix: t("whatsapp.wishlistLineCode"),
+      categoryPrefix: t("whatsapp.wishlistLineCategory"),
+      qtyPrefix: t("whatsapp.wishlistLineQty"),
+      notesPrefix: t("whatsapp.wishlistLineNotes"),
+      closingLine: t("whatsapp.wishlistClosing"),
+      thanksLine: t("whatsapp.wishlistThanks"),
+      pieceSuffix: t("whatsapp.wishlistPieceSuffix"),
+    }),
+    [t],
+  );
+
   function handleProceed(details: { name: string; company: string; email: string; country: string }) {
-    const url = generateWhatsAppURL(items, details);
+    const url = generateWhatsAppURL(items, details, waLabels);
     window.open(url, "_blank");
     setDetailsOpen(false);
   }
 
   function handleSkipDetails() {
-    const url = generateWhatsAppURL(items);
+    const url = generateWhatsAppURL(items, undefined, waLabels);
     window.open(url, "_blank");
     setDetailsOpen(false);
   }
@@ -221,18 +247,18 @@ export default function WishlistPage() {
               </div>
             </div>
             <h1 className="mb-3 text-2xl font-black uppercase text-white">
-              Sign In Required
+              {t("wishlist.gateTitle")}
             </h1>
             <p className="mb-8 text-sm leading-relaxed text-zinc-400">
-              Create an account or sign in to access your wishlist, view product pricing, and proceed to discussion.
+              {t("wishlist.gateBody")}
             </p>
             <div className="flex flex-col gap-3">
               <Button onClick={() => setAuthOpen(true)} size="lg" className="w-full">
-                Sign In / Register
+                {t("wishlist.gateCta")}
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Link href="/products" className="text-sm text-zinc-500 transition-colors hover:text-white">
-                Browse Products
+                {t("wishlist.browseProducts")}
               </Link>
             </div>
           </motion.div>
@@ -259,14 +285,14 @@ export default function WishlistPage() {
             </div>
           </div>
           <h1 className="mb-3 text-2xl font-black uppercase text-white">
-            Your Wishlist is Empty
+            {t("wishlist.emptyTitle")}
           </h1>
           <p className="mb-8 text-sm leading-relaxed text-zinc-400">
-            Browse our catalog and save products you're interested in. Then proceed to discussion via WhatsApp.
+            {t("wishlist.emptyBody")}
           </p>
           <Link href="/products">
             <Button size="lg" className="group relative overflow-hidden">
-              Browse Products
+              {t("wishlist.browseProducts")}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Button>
           </Link>
@@ -291,10 +317,10 @@ export default function WishlistPage() {
             <div>
               <span className="mb-2 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-red-400">
                 <span className="h-px w-6 bg-red-500" />
-                My Wishlist
+                {t("wishlist.savedEyebrow")}
               </span>
               <h1 className="text-3xl font-black uppercase text-white">
-                Saved Products
+                {t("wishlist.savedTitle")}
                 <span className="ml-3 text-xl text-zinc-500">({items.length})</span>
               </h1>
             </div>
@@ -303,7 +329,7 @@ export default function WishlistPage() {
               className="flex items-center gap-2 rounded-lg border border-white/[0.07] px-4 py-2 text-xs text-zinc-500 transition-colors hover:border-red-500/30 hover:text-red-400"
             >
               <Trash2 className="h-3.5 w-3.5" />
-              Clear All
+              {t("wishlist.clearAll")}
             </button>
           </motion.div>
 
@@ -326,18 +352,24 @@ export default function WishlistPage() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-base font-black uppercase text-white">
-                  Ready to Discuss?
+                  {t("wishlist.readyTitle")}
                 </h2>
                 <p className="mt-1 text-xs text-zinc-400">
-                  {items.length} product{items.length !== 1 ? "s" : ""} · Total qty:{" "}
-                  {items.reduce((sum, i) => sum + i.quantity, 0)} pcs
+                  {items.length === 1
+                    ? t("wishlist.readySubSingular", {
+                        total: String(items.reduce((sum, i) => sum + i.quantity, 0)),
+                      })
+                    : t("wishlist.readySubPlural", {
+                        count: String(items.length),
+                        total: String(items.reduce((sum, i) => sum + i.quantity, 0)),
+                      })}
                 </p>
               </div>
               <Heart className="h-6 w-6 fill-red-500 text-red-500" />
             </div>
 
             <p className="mb-6 text-sm leading-relaxed text-zinc-400">
-              Click <strong className="text-white">Proceed to Discussion</strong> to open WhatsApp with a pre-written message containing all your selected products, quantities, and notes. Our team will respond within 24 hours.
+              {t("wishlist.proceedHelp")}
             </p>
 
             <motion.button
@@ -348,13 +380,13 @@ export default function WishlistPage() {
               className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-[#25D366] py-4 text-sm font-bold uppercase tracking-widest text-white shadow-[0_0_30px_rgba(37,211,102,0.2)] transition-shadow hover:shadow-[0_0_40px_rgba(37,211,102,0.35)]"
             >
               <MessageCircle className="h-5 w-5" />
-              Proceed to Discussion
+              {t("wishlist.proceedCta")}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               <span aria-hidden className="absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/[0.1] to-transparent transition-transform duration-500 group-hover:translate-x-full" />
             </motion.button>
 
             <p className="mt-3 text-center text-[10px] text-zinc-600">
-              Opens WhatsApp with your product list pre-filled — tap <strong className="text-zinc-500">Send</strong> to submit your inquiry
+              {t("wishlist.waListHint", { send: t("common.send") })}
             </p>
           </motion.div>
         </div>

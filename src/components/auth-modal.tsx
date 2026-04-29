@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/language-context";
 
 interface AuthModalProps {
   open: boolean;
@@ -13,6 +14,7 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProps) {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"login" | "register">(defaultTab);
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,11 +47,11 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
     e.preventDefault();
     setError("");
     if (!form.email || !form.password) {
-      setError("Email and password are required.");
+      setError(t("auth.errEmailPassword"));
       return;
     }
     if (tab === "register" && !form.name) {
-      setError("Full name is required.");
+      setError(t("auth.errName"));
       return;
     }
     setLoading(true);
@@ -69,7 +71,7 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Registration failed.");
+        setError(data.error ?? t("auth.errRegister"));
         setLoading(false);
         return;
       }
@@ -89,7 +91,7 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Invalid email or password.");
+        setError(data.error ?? t("auth.errLogin"));
         setLoading(false);
         return;
       }
@@ -139,12 +141,12 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-black uppercase tracking-wide text-white">
-                    {tab === "login" ? "Sign In" : "Create Account"}
+                    {tab === "login" ? t("auth.signInTitle") : t("auth.createAccountTitle")}
                   </h2>
                   <p className="mt-1 text-xs text-zinc-500">
                     {tab === "login"
-                      ? "Access prices and your wishlist"
-                      : "Register to view prices and save products"}
+                      ? t("auth.signInSubtitle")
+                      : t("auth.registerSubtitle")}
                   </p>
                 </div>
                 <button
@@ -157,17 +159,17 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
 
               {/* Tab switcher */}
               <div className="mb-6 flex rounded-xl border border-white/[0.08] bg-zinc-900/80 p-1">
-                {(["login", "register"] as const).map((t) => (
+                {(["login", "register"] as const).map((tabId) => (
                   <button
-                    key={t}
-                    onClick={() => { setTab(t); setError(""); }}
+                    key={tabId}
+                    onClick={() => { setTab(tabId); setError(""); }}
                     className={`flex-1 rounded-lg py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
-                      tab === t
+                      tab === tabId
                         ? "bg-red-600 text-white shadow-sm"
                         : "text-zinc-500 hover:text-zinc-300"
                     }`}
                   >
-                    {t === "login" ? "Sign In" : "Register"}
+                    {tabId === "login" ? t("auth.signInTitle") : t("auth.registerTab")}
                   </button>
                 ))}
               </div>
@@ -178,21 +180,21 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
                   <>
                     <input
                       suppressHydrationWarning
-                      placeholder="Full Name *"
+                      placeholder={t("auth.fullNamePh")}
                       value={form.name}
                       onChange={(e) => update("name", e.target.value)}
                       className={inputCls}
                     />
                     <input
                       suppressHydrationWarning
-                      placeholder="Company / Brand"
+                      placeholder={t("auth.companyPh")}
                       value={form.company}
                       onChange={(e) => update("company", e.target.value)}
                       className={inputCls}
                     />
                     <input
                       suppressHydrationWarning
-                      placeholder="Country"
+                      placeholder={t("auth.countryPh")}
                       value={form.country}
                       onChange={(e) => update("country", e.target.value)}
                       className={inputCls}
@@ -203,7 +205,7 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
                 <input
                   suppressHydrationWarning
                   type="email"
-                  placeholder="Email Address *"
+                  placeholder={t("auth.emailPh")}
                   value={form.email}
                   onChange={(e) => update("email", e.target.value)}
                   className={inputCls}
@@ -213,7 +215,7 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
                   <input
                     suppressHydrationWarning
                     type={showPass ? "text" : "password"}
-                    placeholder="Password *"
+                    placeholder={t("auth.passwordPh")}
                     value={form.password}
                     onChange={(e) => update("password", e.target.value)}
                     className={`${inputCls} pr-11`}
@@ -241,10 +243,10 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {loading
-                      ? "Please wait..."
+                      ? t("auth.pleaseWait")
                       : tab === "login"
-                      ? "Sign In"
-                      : "Create Account"}
+                      ? t("auth.signInTitle")
+                      : t("auth.createAccountTitle")}
                     {!loading && (
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     )}
@@ -257,17 +259,17 @@ export function AuthModal({ open, onClose, defaultTab = "login" }: AuthModalProp
               </form>
 
               <p className="mt-5 text-center text-[11px] text-zinc-600">
-                By continuing you agree to our{" "}
+                {t("auth.termsPrefix")}{" "}
                 <a href="/terms" className="text-zinc-400 underline hover:text-white">
-                  Terms &amp; Policy
+                  {t("auth.termsLink")}
                 </a>
               </p>
 
               {tab === "login" && (
                 <p className="mt-3 text-center text-[11px] text-zinc-600">
-                  Admin?{" "}
+                  {t("auth.adminPrompt")}{" "}
                   <a href="/admin/login" className="text-zinc-400 underline hover:text-white">
-                    Sign in as Admin
+                    {t("auth.adminLink")}
                   </a>
                 </p>
               )}

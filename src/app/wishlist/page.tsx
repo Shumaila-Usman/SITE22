@@ -120,16 +120,25 @@ function WishlistRow({ item }: { item: WishlistItem }) {
       <div className="flex gap-4">
         {/* Thumbnail */}
         <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-white/[0.07] bg-zinc-800/60">
-          <div className="flex h-full items-center justify-center">
-            <span className="text-[9px] font-mono text-zinc-600">{item.code}</span>
-          </div>
+          {item.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.image}
+              alt={item.name}
+              className="h-full w-full object-contain p-1"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="text-[9px] font-mono text-zinc-600">{item.code}</span>
+            </div>
+          )}
         </div>
 
         {/* Info */}
         <div className="flex flex-1 flex-col gap-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <Link href={`/products/${item.productId.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
+              <Link href="/products">
                 <h3 className="text-sm font-bold uppercase text-white hover:text-red-300 transition-colors">
                   {item.name}
                 </h3>

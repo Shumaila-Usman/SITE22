@@ -47,6 +47,8 @@ export default async function ProductDetailPage({
   if (!dbProduct) notFound();
 
   const product = dbProductToProduct(dbProduct);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const materials: string = (dbProduct as any).materials ?? "";
 
   // Related products in the same subcategory
   const dbRelated = await ProductModel.find({
@@ -112,7 +114,7 @@ export default async function ProductDetailPage({
               {product.mainCategory} — {product.subCategory}
             </span>
             <h1 className="mb-2 text-3xl font-black uppercase leading-tight text-white md:text-4xl">
-              {product.subCategory}
+              {product.name}
             </h1>
             <p className="mb-1 font-mono text-sm text-zinc-500">{product.code}</p>
             <p className="mb-8 text-[1.0625rem] leading-[1.75] text-zinc-400">{product.description}</p>
@@ -123,7 +125,7 @@ export default async function ProductDetailPage({
                 { label: "MOQ",      value: `${product.moq} pieces` },
                 { label: "Sizes",    value: product.sizes   || "—" },
                 { label: "Colors",   value: product.colors  || "—" },
-                { label: "Currency", value: product.currency },
+                { label: "Material", value: materials || "—" },
               ].map((s) => (
                 <div key={s.label} className="rounded-xl border border-white/[0.07] bg-zinc-900/50 p-4">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">{s.label}</p>
@@ -179,8 +181,13 @@ export default async function ProductDetailPage({
                   href={`/products/${category}/${subcategory}/${p.slug}`}
                   className="group rounded-xl border border-white/[0.07] bg-zinc-900/60 p-5 transition-colors hover:border-red-500/20"
                 >
+                  {p.image && (
+                    <div className="relative mb-3 aspect-square overflow-hidden rounded-lg bg-zinc-800/60">
+                      <Image src={p.image} alt={p.name} fill className="object-contain p-2" />
+                    </div>
+                  )}
                   <p className="font-mono text-xs text-zinc-500">{p.code}</p>
-                  <p className="mt-1 text-sm font-bold uppercase text-white group-hover:text-red-300">{p.subCategory}</p>
+                  <p className="mt-1 text-sm font-bold uppercase text-white group-hover:text-red-300">{p.name}</p>
                   <p className="mt-1 text-xs text-zinc-400 line-clamp-2">{p.description}</p>
                 </Link>
               ))}

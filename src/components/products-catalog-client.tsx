@@ -20,9 +20,10 @@ export type CatalogSubcategory = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "sports-wear": "from-red-600/30",
+  "sports-wear":  "from-red-600/30",
   "fitness-wear": "from-orange-700/25",
-  "casual-wear": "from-rose-700/25",
+  "casual-wear":  "from-rose-700/25",
+  "fashion-wear": "from-purple-700/25",
 };
 
 export function ProductsCatalogClient({
